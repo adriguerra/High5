@@ -7,7 +7,7 @@ namespace Parse5.Extensions
 {
     class List<T> : System.Collections.Generic.List<T>
     {
-        public int length => Count;
+        public Int length => Count;
     }
     static class Extensions
     {
