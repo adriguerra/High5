@@ -5,11 +5,11 @@ using System.Text;
 
 namespace Parse5.Extensions
 {
-    public class List<T> : System.Collections.Generic.List<T>
+    class List<T> : System.Collections.Generic.List<T>
     {
         public int length => Count;
     }
-    public static class Extensions
+    static class Extensions
     {
         public static string toLowerCase(this String str)
         {
