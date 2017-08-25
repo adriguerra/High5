@@ -77,7 +77,7 @@ namespace ParseFive.Parser
 
 
         //Template insertion mode switch map
-        static IDictionary<string, string> TEMPLATE_INSERTION_MODE_SWITCH_MAP = new Dictionary<string, string>
+        public static IDictionary<string, string> TEMPLATE_INSERTION_MODE_SWITCH_MAP = new Dictionary<string, string>
         {
             [ɑ.CAPTION] = IN_TABLE_MODE,
             [ɑ.COLGROUP] = IN_TABLE_MODE,

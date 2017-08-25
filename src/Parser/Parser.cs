@@ -1233,7 +1233,7 @@ namespace ParseFive.Parser
 
             if (activeElementEntry)
             {
-                callAdoptionAgency(Parser p, Token token);
+                callAdoptionAgency(p, token);
                 p.openElements.remove(activeElementEntry.element);
                 p.activeFormattingElements.removeEntry(activeElementEntry);
             }
@@ -1816,6 +1816,11 @@ namespace ParseFive.Parser
             }
         }
 
+        static void numberedHeaderEndTagInBody(Parser p, Token token)
+        {
+            numberedHeaderEndTagInBody(p);
+        }
+
         static void appletEndTagInBody(Parser p, Token token)
         {
             var tn = token.tagName;
@@ -1834,6 +1839,11 @@ namespace ParseFive.Parser
             p._insertFakeElement(ɑ.BR);
             p.openElements.pop();
             p.framesetOk = false;
+        }
+
+        static void brEndTagInBody(Parser p, Token token)
+        {
+            brEndTagInBody(p);
         }
 
         static void genericEndTagInBody(Parser p, Token token)
@@ -1995,6 +2005,7 @@ namespace ParseFive.Parser
 
                 default:
                     genericEndTagInBody(p, token);
+                    break;
             }
         }
         
@@ -2604,8 +2615,8 @@ namespace ParseFive.Parser
 
             if (tn == ɑ.OPTGROUP)
             {
-                var prevOpenElement = p.openElements.items[p.openElements.stackTop - 1],
-                    prevOpenElementTn = prevOpenElement && p.treeAdapter.getTagName(prevOpenElement);
+                var prevOpenElement = p.openElements.items[p.openElements.stackTop - 1];
+                var prevOpenElementTn = prevOpenElement && p.treeAdapter.getTagName(prevOpenElement);
 
                 if (p.openElements.currentTagName == ɑ.OPTION && prevOpenElementTn == ɑ.OPTGROUP)
                     p.openElements.pop();
@@ -2679,7 +2690,7 @@ namespace ParseFive.Parser
 
             else
             {
-                var newInsertionMode = TEMPLATE_INSERTION_MODE_SWITCH_MAP[tn] || IN_BODY_MODE;
+                var newInsertionMode = TEMPLATE_INSERTION_MODE_SWITCH_MAP[tn] /*||*/ ?? IN_BODY_MODE; //TODO
 
                 p._popTmplInsertionMode();
                 p._pushTmplInsertionMode(newInsertionMode);
