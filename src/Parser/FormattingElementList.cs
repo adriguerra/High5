@@ -2,19 +2,19 @@
 using ParseFive.Extensions;
 using System.Text;
 using NeAttrsMap = System.Collections.Generic.Dictionary<string, int>;
+using ParseFive.Tokenizer;
+//using Attrs = ParseFive.Extensions.List<Attr>;
 
 
-interface IEntry
+public abstract class IEntry
 {
-    string type { get; set; }
-    string element { get; set; }
+    public string type { get; set; }
+    public string element { get; set; }
 }
 
 public class MarkerEntry : IEntry
 {
-    public string type { get; set; }
-
-    MarkerEntry(string type)
+    public MarkerEntry(string type)
     {
         this.type = type;
     }
@@ -22,10 +22,9 @@ public class MarkerEntry : IEntry
 
 public class ElementEntry : IEntry
 {
-    public string type { get; set; }
-    public string element { get; set; }
     public Token token { get; set; }
-    ElementEntry(string type, string element, Token token)
+
+    public ElementEntry(string type, string element, Token token)
     {
         this.type = type;
         this.element = element;
@@ -35,9 +34,34 @@ public class ElementEntry : IEntry
 
 public interface TreeAdapter
 {
-     List<Attr> getAttrList();
-     string getTagName();
-     string getNamespaceURI();
+    object options { get; set; }
+    List<Attr> getAttrList(object o);
+    string getTagName(object o);
+    string getNamespaceURI(object o);
+    Document createDocument();
+    Document createElement(string tEMPLATE, string hTML, List<Attr> p);
+    object getFirstChild(object documentMock);
+    object createDocumentFragment();
+    void setDocumentType(object document, string name, string publicId, string systemId);
+    void insertText(object parent, string chars);
+    void insertTextBefore(object parent, object chars, object beforeElement);
+    void appendChild(object parent, object element);
+    void insertBefore(object parent, object element, object beforeElement);
+    object getParentNode(object openElement);
+    object getTemplateContent(object openElement);
+    object createCommentNode(string data);
+    void detachNode(object child);
+    void setTemplateContent(object tmpl, object content);
+    void adoptAttributes(object p, List<Attr> attrs);
+    void setDocumentMode(Document document, string mode);
+}
+
+public class Document
+{
+
+}
+public class DocumentFragment
+{
 
 }
 
@@ -47,15 +71,15 @@ namespace ParseFive.Parser
     {
         const int NOAH_ARK_CAPACITY = 3;
 
-        int length;
-        List<IEntry> entries;
-        TreeAdapter treeAdapter;
+        Int length;
+        public List<IEntry> entries;
+        public TreeAdapter treeAdapter;
         object bookmark;
 
-        const string MARKER_ENTRY = "MARKER_ENTRY";
-        const string ELEMENT_ENTRY = "ELEMENT_ENTRY";
+        public const string MARKER_ENTRY = "MARKER_ENTRY";
+        public const string ELEMENT_ENTRY = "ELEMENT_ENTRY";
 
-        FormattingElementList(TreeAdapter treeAdapter)
+        public FormattingElementList(TreeAdapter treeAdapter)
         {
             length = 0;
             entries = new List<IEntry>();
@@ -137,13 +161,13 @@ namespace ParseFive.Parser
             }
         }
 
-        void insertMarker()
+        public void insertMarker()
         {
             entries.push(new MarkerEntry(MARKER_ENTRY));
             length++;
         }
 
-        void pushElement(object element, Token token)
+        public void pushElement(object element, Token token)
         {
             this.ensureNoahArkCondition(element);
 
@@ -151,7 +175,7 @@ namespace ParseFive.Parser
             length++;
         }
 
-        void removeEntry(IEntry entry)
+        public void removeEntry(IEntry entry)
         {
             for (var i = this.length - 1; i >= 0; i--)
             {
@@ -164,7 +188,7 @@ namespace ParseFive.Parser
             }
         }
 
-        void clearToLastMarker()
+        public void clearToLastMarker()
         {
             while (this.length)
             {
@@ -178,7 +202,7 @@ namespace ParseFive.Parser
         }
 
         //Search
-        IEntry getElementEntryInScopeWithTagName(string tagName)
+        public IEntry getElementEntryInScopeWithTagName(string tagName)
         {
             for (var i = this.length - 1; i >= 0; i--)
             {
@@ -194,7 +218,7 @@ namespace ParseFive.Parser
             return null;
         }
 
-        IEntry getElementEntry(element)
+        public IEntry getElementEntry(element)
         {
             for (var i = this.length - 1; i >= 0; i--)
             {

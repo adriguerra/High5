@@ -6,7 +6,7 @@ namespace ParseFive.Common
 {
     class Unicode
     {
-        char REPLACEMENT_CHARACTER = '\uFFFD';
+        public const char REPLACEMENT_CHARACTER = '\uFFFD';
 
         public static class CODE_POINTS {
             public const int EOF = -1;

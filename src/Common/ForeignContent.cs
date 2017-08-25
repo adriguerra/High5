@@ -6,18 +6,8 @@ using Attrs = ParseFive.Extensions.List<Attr>;
 using ɑ = HTML.TAG_NAMES;
 using NS = HTML.NAMESPACES;
 using ATTRS = HTML.ATTRS;
+using ParseFive.Tokenizer;
 
-public class Token
-{
-    public Attrs attrs = new Attrs();
-    public string tagName;
-    public string type;
-
-    public Token(string type)
-    {
-        this.type = type;
-    }
-}
 public class Attr
 {
     public string prefix;
@@ -53,7 +43,7 @@ namespace ParseFive.Common
         //Attributes
         public const string DEFINITION_URL_ATTR = "definitionurl";
         public const string ADJUSTED_DEFINITION_URL_ATTR = "definitionURL";
-        public IDictionary<string, string> SVG_ATTRS_ADJUSTMENT_MAP = new Dictionary<string, string>
+        public static IDictionary<string, string> SVG_ATTRS_ADJUSTMENT_MAP = new Dictionary<string, string>
         {
             {"attributename", "attributeName"},
             {"attributetype", "attributeType"},
@@ -115,7 +105,7 @@ namespace ParseFive.Common
             {"zoomandpan", "zoomAndPan" },
         };
 
-        public IDictionary<string, XmlAdjustment> XML_ATTRS_ADJUSTMENT_MAP = new Dictionary<string, XmlAdjustment>
+        public static IDictionary<string, XmlAdjustment> XML_ATTRS_ADJUSTMENT_MAP = new Dictionary<string, XmlAdjustment>
         {
             ["xlink:actuate"] = new XmlAdjustment("xlink", "actuate", NS.XLINK),
             ["xlink:arcrole"] = new XmlAdjustment("xlink", "arcrole", NS.XLINK),
@@ -134,7 +124,7 @@ namespace ParseFive.Common
 
 
         //SVG tag names adjustment map
-        public IDictionary<string, string> SVG_TAG_NAMES_ADJUSTMENT_MAP = new Dictionary<string, string>
+        public static IDictionary<string, string> SVG_TAG_NAMES_ADJUSTMENT_MAP = new Dictionary<string, string>
         {
             ["altglyph"] = "altGlyph",
             ["altglyphdef"] = "altGlyphDef",
@@ -176,7 +166,7 @@ namespace ParseFive.Common
 
         //Tags that causes exit from foreign content
         //public static IDictionary<string, IDictionary<string, bool>> SPECIAL_ELEMENTS = new Dictionary<string, IDictionary<string, bool>>
-        public IDictionary<string, bool> EXITS_FOREIGN_CONTENT = new Dictionary<string, bool>
+        public static IDictionary<string, bool> EXITS_FOREIGN_CONTENT = new Dictionary<string, bool>
         {
             [ɑ.B] = true,
             [ɑ.BIG] = true,
@@ -227,7 +217,7 @@ namespace ParseFive.Common
 
 
         //Check exit from foreign content
-        public bool causesExit(Token startTagToken)
+        public static bool causesExit(Token startTagToken)
         {
             var tn = startTagToken.tagName;
             var isFontWithAttrs = tn == ɑ.FONT && (Tokenizer.getTokenAttr(startTagToken, ATTRS.COLOR) != null ||
@@ -238,7 +228,7 @@ namespace ParseFive.Common
         }
 
         //Token adjustments
-        public void adjustTokenMathMLAttrs(Token token)
+        public static void adjustTokenMathMLAttrs(Token token)
         {
             for (var i = 0; i < token.attrs.length; i++)
             {
@@ -250,7 +240,7 @@ namespace ParseFive.Common
             }
         }
 
-        public void adjustTokenSVGAttrs(Token token)
+        public static void adjustTokenSVGAttrs(Token token)
         {
             for (var i = 0; i < token.attrs.length; i++)
             {
@@ -261,7 +251,7 @@ namespace ParseFive.Common
             }
         }
 
-        public void adjustTokenXMLAttrs(Token token)
+        public static void adjustTokenXMLAttrs(Token token)
         {
             for (var i = 0; i < token.attrs.length; i++)
             {
@@ -277,7 +267,7 @@ namespace ParseFive.Common
         }
 
 
-        public void adjustTokenSVGTagName(Token token)
+        public static void adjustTokenSVGTagName(Token token)
         {
             var adjustedTagName = SVG_TAG_NAMES_ADJUSTMENT_MAP[token.tagName];
 
@@ -286,12 +276,12 @@ namespace ParseFive.Common
         }
 
         //Integration points
-        public bool isMathMLTextIntegrationPoint(string tn, string ns)
+        static bool isMathMLTextIntegrationPoint(string tn, string ns)
         {
             return ns == NS.MATHML && (tn == ɑ.MI || tn == ɑ.MO || tn == ɑ.MN || tn == ɑ.MS || tn == ɑ.MTEXT);
         }
 
-        public bool isHtmlIntegrationPoint(string tn, string ns, List<Attr> attrs)
+        static bool isHtmlIntegrationPoint(string tn, string ns, List<Attr> attrs)
         {
             if (ns == NS.MATHML && tn == ɑ.ANNOTATION_XML)
             {
@@ -309,7 +299,7 @@ namespace ParseFive.Common
             return ns == NS.SVG && (tn == ɑ.FOREIGN_OBJECT || tn == ɑ.DESC || tn == ɑ.TITLE);
         }
 
-        public bool isIntegrationPoint(string tn, string ns, List<Attr> attrs, string foreignNS)
+        public static bool isIntegrationPoint(string tn, string ns, List<Attr> attrs, string foreignNS)
         {
             if ((!foreignNS || foreignNS == NS.HTML) && isHtmlIntegrationPoint(tn, ns, attrs))
                 return true;

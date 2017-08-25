@@ -58,6 +58,7 @@ namespace ParseFive.Extensions
         }
 
         public static string substring(this string s, int startIndex) => s.Substring(startIndex);
+        public static string substr(this string s, int startIndex) => s.Substring(startIndex);
 
         public static string substring(this string s, int startIndex, int length) => s.Substring(startIndex, length);
 

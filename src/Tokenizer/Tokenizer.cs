@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Attrs = ParseFive.Extensions.List<Attr>;
 using TempBuff = ParseFive.Extensions.List<int>;
-using TokenQueue = ParseFive.Extensions.List<Token>;
+using TokenQueue = ParseFive.Extensions.List<ParseFive.Tokenizer.Token>;
 using ɑ = ParseFive.Common.Unicode.CODE_POINTS;
 using ɑɑ = ParseFive.Common.Unicode.CODE_POINT_SEQUENCES;
 using static ParseFive.Tokenizer.Index;
@@ -19,7 +19,7 @@ namespace ParseFive.Tokenizer
         public _Attribute(string name) => _name = name;
     }
 
-    class Token
+    public class Token
     {
         public string type { get; set; }
         public string tagName { get; set; }
@@ -30,6 +30,7 @@ namespace ParseFive.Tokenizer
         public bool forceQuirks { get; set; }
         public string publicId { get; set; }
         public string systemId { get; set; }
+        public string chars { get; set; }
 
         public Token(string type, string tagName, bool selfClosing, Attrs attrs) //START TAG
         {
@@ -39,7 +40,14 @@ namespace ParseFive.Tokenizer
             this.attrs = attrs;
         }
 
-        public Token(string type, string tagName, Attrs attrs) //end tag
+        public Token(string type, char ch)
+        {
+            this.type = type;
+            this.chars = ch.ToString();
+        }
+    
+
+    public Token(string type, string tagName, Attrs attrs) //end tag
         {
             this.type = type;
             this.tagName = tagName;
@@ -68,44 +76,37 @@ namespace ParseFive.Tokenizer
 
     }
 
-    class CharacterToken {
-        public string type { get; set; }
-        public char chars { get; set; }
-
-        public CharacterToken(string type, char ch)
-        {
-            this.type = type;
-            this.chars = ch;
-        }
-    }
 
     class Tokenizer
     {
         //Token types
-        string CHARACTER_TOKEN = "CHARACTER_TOKEN";
-        string NULL_CHARACTER_TOKEN = "NULL_CHARACTER_TOKEN";
-        string WHITESPACE_CHARACTER_TOKEN = "WHITESPACE_CHARACTER_TOKEN";
-        string START_TAG_TOKEN = "START_TAG_TOKEN";
-        string END_TAG_TOKEN = "END_TAG_TOKEN";
-        string COMMENT_TOKEN = "COMMENT_TOKEN";
-        string DOCTYPE_TOKEN = "DOCTYPE_TOKEN";
-        string EOF_TOKEN = "EOF_TOKEN";
-        string HIBERNATION_TOKEN = "HIBERNATION_TOKEN";
+        public const string CHARACTER_TOKEN = "CHARACTER_TOKEN";
+        public const string NULL_CHARACTER_TOKEN = "NULL_CHARACTER_TOKEN";
+        public const string WHITESPACE_CHARACTER_TOKEN = "WHITESPACE_CHARACTER_TOKEN";
+        public const string START_TAG_TOKEN = "START_TAG_TOKEN";
+        public const string END_TAG_TOKEN = "END_TAG_TOKEN";
+        public const string COMMENT_TOKEN = "COMMENT_TOKEN";
+        public const string DOCTYPE_TOKEN = "DOCTYPE_TOKEN";
+        public const string EOF_TOKEN = "EOF_TOKEN";
+        public const string HIBERNATION_TOKEN = "HIBERNATION_TOKEN";
 
         //Fields
         private Preprocessor preprocessor;
         private TokenQueue tokenQueue;
-        private bool allowCDATA;
-        private string state;
+        public bool allowCDATA;
+        public string state { get ; set ; }
         private string returnState;
         private TempBuff tempBuff;
         private int? additionalAllowedCp;
         private string lastStartTagName;
         private int consumedAfterSnapshot;
         private bool active;
-        private CharacterToken currentCharacterToken;
+        private Token currentCharacterToken;
         private Token currentToken;
         private Attr currentAttr;
+        private object options;
+
+        //public string state { get => _state; set => _state = value; }
 
         //Tokenizer
         Tokenizer()
@@ -131,15 +132,20 @@ namespace ParseFive.Tokenizer
             this.currentAttr = null;
         }
 
+        public Tokenizer(object options) //TODO
+        {
+            this.options = options;
+        }
+
 
         //Tokenizer initial states for different modes
         public static class MODE
         {
-            static string DATA = Index.DATA_STATE;
-            static string RCDATA = Index.RCDATA_STATE;
-            static string RAWTEXT = Index.RAWTEXT_STATE;
-            static string SCRIPT_DATA = Index.SCRIPT_DATA_STATE;
-            static string PLAINTEXT = Index.PLAINTEXT_STATE;
+            public static string DATA = Index.DATA_STATE;
+            public static string RCDATA = Index.RCDATA_STATE;
+            public static string RAWTEXT = Index.RAWTEXT_STATE;
+            public static string SCRIPT_DATA = Index.SCRIPT_DATA_STATE;
+            public static string PLAINTEXT = Index.PLAINTEXT_STATE;
         }
 
         //Static
@@ -155,7 +161,7 @@ namespace ParseFive.Tokenizer
         }
 
         //API
-        void getNextToken()
+        public Token getNextToken()
         {
             while (!this.tokenQueue.length && this.active)
             {
@@ -167,28 +173,28 @@ namespace ParseFive.Tokenizer
                     this[this.state](cp);
             }
 
-            return this.tokenQueue.shift();
+            return tokenQueue.shift();
         }
 
-        void write(string chunk, bool isLastChunk)
+        public void write(string chunk, bool isLastChunk)
         {
             this.active = true;
             this.preprocessor.write(chunk, isLastChunk);
         }
 
-        void insertHtmlAtCurrentPos(string chunk)
+        public void insertHtmlAtCurrentPos(string chunk)
         {
             this.active = true;
             this.preprocessor.insertHtmlAtCurrentPos(chunk);
         }
 
         //Hibernation
-        void hibernationSnapshot()
+        public void hibernationSnapshot()
         {
             this.consumedAfterSnapshot = 0;
         }
 
-        bool ensureHibernation()
+        public bool ensureHibernation()
         {
             if (this.preprocessor.endOfChunkHit)
             {
@@ -206,13 +212,13 @@ namespace ParseFive.Tokenizer
 
 
         //Consumption
-        int consume()
+        public int consume()
         {
             this.consumedAfterSnapshot++;
             return this.preprocessor.advance();
         }
 
-        void unconsume()
+        public void unconsume()
         {
             this.consumedAfterSnapshot--;
             this.preprocessor.retreat();
@@ -316,7 +322,7 @@ namespace ParseFive.Tokenizer
 
         void createCharacterToken(string type, char ch)
         {
-            this.currentCharacterToken = new CharacterToken(type, ch);
+            this.currentCharacterToken = new Token(type, ch);
         }
 
         //Tag attributes
@@ -644,7 +650,7 @@ namespace ParseFive.Tokenizer
         //------------------------------------------------------------------
         [_(Index.CHARACTER_REFERENCE_IN_RCDATA_STATE)] void characterReferenceInRcdataState(int cp)
         {
-            this.additionalAllowedCp = void 0;
+            this.additionalAllowedCp = null; //TODO void 0;
 
             var referencedCodePoints = this.consumeCharacterReference(cp, false);
 
@@ -1809,7 +1815,7 @@ namespace ParseFive.Tokenizer
         this.currentToken.data += '-';
 
     else if (cp == ɑ.NULL) {
-        this.currentToken.data += '--';
+        this.currentToken.data += "--";
         this.currentToken.data += ɑ.REPLACEMENT_CHARACTER;
         this.state = COMMENT_STATE;
     }
