@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Parse5.Extensions
+namespace ParseFive.Extensions
 {
-    class List<T> : System.Collections.Generic.List<T>
+    public class List<T> : System.Collections.Generic.List<T>
     {
         public Int length => Count;
     }
-    static class Extensions
+    public static class Extensions
     {
         public static string toLowerCase(this String str)
         {
@@ -20,6 +20,8 @@ namespace Parse5.Extensions
         {
             return first.Concat(second).ToArray();
         }
+
+        public static int length<T>(this T[] array) => array.Length;
 
         public static int indexOf<T> (this T[] first, T e)
         {
@@ -43,6 +45,18 @@ namespace Parse5.Extensions
             list.RemoveRange(index, count);
         }
 
+        public static string substring(this string s, int startIndex) => s.Substring(startIndex);
 
+        public static string substring(this string s, int startIndex, int length) => s.Substring(startIndex, length);
+
+        //public static int length(this string s) => s.Length;
+
+        public static char toChar(int n) => (char)n;
+
+        public static Int length<T>(this Queue<T> q) => q.Count;
+
+        public static int length<T>(this List<T> l) => l.Count;
+
+        public static int charCodeAt(this string str, int index) => (int)str[index];
     }
 }

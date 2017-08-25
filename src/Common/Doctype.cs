@@ -1,7 +1,7 @@
-﻿using Parse5.Extensions;
+﻿using ParseFive.Extensions;
 using DOCUMENT_MODE = HTML.DOCUMENT_MODE;
 
-namespace Parse5.Common
+namespace ParseFive.Common
 {
     static class Doctype
     {

@@ -1,16 +1,16 @@
 ﻿using System;
-using Parse5.Extensions;
+using ParseFive.Extensions;
 using System.Text;
 using NeAttrsMap = System.Collections.Generic.Dictionary<string, int>;
 
 
-interface Entry
+interface IEntry
 {
     string type { get; set; }
     string element { get; set; }
 }
 
-public class MarkerEntry : Entry
+public class MarkerEntry : IEntry
 {
     public string type { get; set; }
 
@@ -20,7 +20,7 @@ public class MarkerEntry : Entry
     }
 }
 
-public class ElementEntry : Entry
+public class ElementEntry : IEntry
 {
     public string type { get; set; }
     public string element { get; set; }
@@ -41,14 +41,14 @@ public interface TreeAdapter
 
 }
 
-namespace Parse5.Parser
+namespace ParseFive.Parser
 {
     class FormattingElementList
     {
         const int NOAH_ARK_CAPACITY = 3;
 
         int length;
-        List<Entry> entries;
+        List<IEntry> entries;
         TreeAdapter treeAdapter;
         object bookmark;
 
@@ -58,7 +58,7 @@ namespace Parse5.Parser
         FormattingElementList(TreeAdapter treeAdapter)
         {
             length = 0;
-            entries = new List<Entry>();
+            entries = new List<IEntry>();
         }
 
         private List<object> getNoahArkConditionCandidates(object newElement)
@@ -151,7 +151,7 @@ namespace Parse5.Parser
             length++;
         }
 
-        void removeEntry(Entry entry)
+        void removeEntry(IEntry entry)
         {
             for (var i = this.length - 1; i >= 0; i--)
             {
@@ -178,7 +178,7 @@ namespace Parse5.Parser
         }
 
         //Search
-        Entry getElementEntryInScopeWithTagName(string tagName)
+        IEntry getElementEntryInScopeWithTagName(string tagName)
         {
             for (var i = this.length - 1; i >= 0; i--)
             {
@@ -194,7 +194,7 @@ namespace Parse5.Parser
             return null;
         }
 
-        Entry getElementEntry(element)
+        IEntry getElementEntry(element)
         {
             for (var i = this.length - 1; i >= 0; i--)
             {

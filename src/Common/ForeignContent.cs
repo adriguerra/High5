@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using ParseFive.Extensions;
+using Attrs = ParseFive.Extensions.List<Attr>;
 //Aliases
 using ɑ = HTML.TAG_NAMES;
 using NS = HTML.NAMESPACES;
@@ -7,8 +9,14 @@ using ATTRS = HTML.ATTRS;
 
 public class Token
 {
-    public readonly List<Attr> attrs = new List<Attr>();
+    public Attrs attrs = new Attrs();
     public string tagName;
+    public string type;
+
+    public Token(string type)
+    {
+        this.type = type;
+    }
 }
 public class Attr
 {
@@ -16,9 +24,17 @@ public class Attr
     public string name;
     public string @namespace;
     public readonly string value;
+
+    public Attr(string name, string value)
+    {
+        this.prefix = ""; //TODO check
+        this.name = name;
+        this.@namespace = "";
+        this.value = value;
+    }
 }
 
-namespace Parse5.Common
+namespace ParseFive.Common
 {
     using Extensions;
 

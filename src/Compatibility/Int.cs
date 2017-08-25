@@ -1,6 +1,6 @@
 using System;
 
-struct Int : IEquatable<Int>, IComparable<Int>
+public struct Int : IEquatable<Int>, IComparable<Int>
 {
     readonly int _value;
 

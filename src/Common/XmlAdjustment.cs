@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Parse5.Common
+namespace ParseFive.Common
 {
     public class XmlAdjustment
     {
