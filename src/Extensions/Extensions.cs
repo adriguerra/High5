@@ -8,6 +8,7 @@ namespace ParseFive.Extensions
     public class List<T> : System.Collections.Generic.List<T>
     {
         public Int length => Count;
+        
     }
     public static class Extensions
     {
@@ -35,6 +36,8 @@ namespace ParseFive.Extensions
 
         public static T pop<T>(this List<T> list)
         {
+            if (list.Count == 0)
+                throw new IndexOutOfRangeException("Array is empty");
             var temp = list[list.length - 1];
             list.RemoveAt(list.length - 1);
             return temp;
@@ -43,6 +46,15 @@ namespace ParseFive.Extensions
         public static void splice<T>(this List<T> list, int index, int count)
         {
             list.RemoveRange(index, count);
+        }
+
+        public static T shift<T> (this List<T> list)
+        {
+            if (list.Count == 0)
+                throw new IndexOutOfRangeException("Array is empty");
+            var temp = list[0];
+            list.RemoveAt(0);
+            return temp;
         }
 
         public static string substring(this string s, int startIndex) => s.Substring(startIndex);
@@ -58,5 +70,14 @@ namespace ParseFive.Extensions
         public static int length<T>(this List<T> l) => l.Count;
 
         public static int charCodeAt(this string str, int index) => (int)str[index];
+
+        public static int parseInt(string n, int b)
+        {
+            return b == 16
+                  ? int.Parse(n, System.Globalization.NumberStyles.HexNumber)
+                  : b == 10
+                  ? int.Parse(n)
+                  : throw new ArgumentException("Unsupported base");
+        }
     }
 }

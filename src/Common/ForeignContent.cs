@@ -23,7 +23,7 @@ public class Attr
     public string prefix;
     public string name;
     public string @namespace;
-    public readonly string value;
+    public string value;
 
     public Attr(string name, string value)
     {

@@ -35,7 +35,8 @@ namespace ParseFive.Tokenizer
             return (cp1 - 0xD800) * 0x400 + 0x2400 + cp2;
         }
 
-        public Preprocessor() {
+        public Preprocessor()
+        {
             this.html = null;
 
             this.pos = -1;
@@ -50,8 +51,8 @@ namespace ParseFive.Tokenizer
             this.endOfChunkHit = false;
             this.bufferWaterline = DEFAULT_BUFFER_WATERLINE;
         }
-        
-        public void dropParsedChunk ()
+
+        public void dropParsedChunk()
         {
             if (this.pos > this.bufferWaterline)
             {
@@ -96,26 +97,26 @@ namespace ParseFive.Tokenizer
             return cp;
         }
 
-        public void write (string chunk, bool isLastChunk)
+        public void write(string chunk, bool isLastChunk)
         {
-            if (this.html)
+            if (this.html) //TODO
                 this.html += chunk;
 
             else
                 this.html = chunk;
 
-            this.lastCharPos = this.html.length - 1;
+            this.lastCharPos = this.html.Length - 1;
             this.endOfChunkHit = false;
             this.lastChunkWritten = isLastChunk;
         }
 
-        public void insertHtmlAtCurrentPos (string chunk)
+        public void insertHtmlAtCurrentPos(string chunk)
         {
             this.html = this.html.substring(0, this.pos + 1) +
                         chunk +
-                        this.html.substring(this.pos + 1, this.html.length);
+                        this.html.substring(this.pos + 1, this.html.Length);
 
-            this.lastCharPos = this.html.length - 1;
+            this.lastCharPos = this.html.Length - 1;
             this.endOfChunkHit = false;
         }
 
@@ -135,14 +136,16 @@ namespace ParseFive.Tokenizer
 
             //NOTE: any U+000A LINE FEED (LF) characters that immediately follow a U+000D CARRIAGE RETURN (CR) character
             //must be ignored.
-            if (this.skipNextNewLine && cp == ɑ.LINE_FEED) {
+            if (this.skipNextNewLine && cp == ɑ.LINE_FEED)
+            {
                 this.skipNextNewLine = false;
                 this.addGap();
                 return this.advance();
             }
 
             //NOTE: all U+000D CARRIAGE RETURN (CR) characters must be converted to U+000A LINE FEED (LF) characters
-            if (cp == ɑ.CARRIAGE_RETURN) {
+            if (cp == ɑ.CARRIAGE_RETURN)
+            {
                 this.skipNextNewLine = true;
                 return ɑ.LINE_FEED;
             }
@@ -165,5 +168,5 @@ namespace ParseFive.Tokenizer
 
             this.pos--;
         }
-
     }
+}
