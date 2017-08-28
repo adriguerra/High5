@@ -14,17 +14,17 @@ namespace ParseFive.TreeAdapters
     class DefaultTreeAdapter : TreeAdapter
     {
         public object options { get; set; }
-        public List<Attr> getAttrList(Node o)
+        public List<Attr> getAttrList(Node element)
         {
             throw new NotImplementedException();
         }
 
-        public string getTagName(Node e)
+        public string getTagName(Node element)
         {
             throw new NotImplementedException();
         }
 
-        public string getNamespaceURI(Node o)
+        public string getNamespaceURI(Node element)
         {
             throw new NotImplementedException();
         }
@@ -34,12 +34,12 @@ namespace ParseFive.TreeAdapters
             throw new NotImplementedException();
         }
 
-        public Element createElement(string tEMPLATE, string hTML, List<Attr> p)
+        public Element createElement(string tagName, string namespaceURI, List<Attr> attrs)
         {
             throw new NotImplementedException();
         }
 
-        public Element getFirstChild(Element documentMock)
+        public Element getFirstChild(Element node)
         {
             throw new NotImplementedException();
         }
@@ -59,27 +59,27 @@ namespace ParseFive.TreeAdapters
             throw new NotImplementedException();
         }
 
-        public void insertTextBefore(object parent, object chars, Element beforeElement)
+        public void insertTextBefore(object parentNode, object text, Element referenceNode)
         {
             throw new NotImplementedException();
         }
 
-        public void appendChild(Node parent, Node element)
+        public void appendChild(Node parentNode, Node newNode)
         {
             throw new NotImplementedException();
         }
 
-        public void insertBefore(object parent, Element element, Element beforeElement)
+        public void insertBefore(object parentNode, Element newNode, Element referenceNode)
         {
             throw new NotImplementedException();
         }
 
-        public Node getParentNode(Node openElement)
+        public Node getParentNode(Node node)
         {
             throw new NotImplementedException();
         }
 
-        public Element getTemplateContent(Element openElement)
+        public Element getTemplateContent(Element templateElement)
         {
             throw new NotImplementedException();
         }
@@ -89,17 +89,17 @@ namespace ParseFive.TreeAdapters
             throw new NotImplementedException();
         }
 
-        public void detachNode(object child)
+        public void detachNode(object node)
         {
             throw new NotImplementedException();
         }
 
-        public void setTemplateContent(object tmpl, object content)
+        public void setTemplateContent(object templateElement, object contentElement)
         {
             throw new NotImplementedException();
         }
 
-        public void adoptAttributes(object p, List<Attr> attrs)
+        public void adoptAttributes(object recipient, List<Attr> attrs)
         {
             throw new NotImplementedException();
         }
