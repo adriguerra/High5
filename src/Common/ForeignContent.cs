@@ -27,6 +27,7 @@ public class Attr
 namespace ParseFive.Common
 {
     using Extensions;
+    using Tokenizer = Tokenizer.Tokenizer;
 
     class ForeignContent
     {
