@@ -29,6 +29,7 @@ namespace ParseFive.Extensions
     public static class Extensions
     {
         public static bool IsTruthy(this object o) => o != null;
+        public static bool IsTruthy(this string s) => !string.IsNullOrEmpty(s);
         public static bool IsTruthy(this int n) => n != 0;
         public static bool IsTruthy(this Int n) => n != 0;
 
