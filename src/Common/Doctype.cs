@@ -7,8 +7,8 @@ namespace ParseFive.Common
     {
         //var DOCUMENT_MODE = require('./html').DOCUMENT_MODE;
         //Const
-        static readonly string VALID_DOCTYPE_NAME;
-        static readonly string QUIRKS_MODE_SYSTEM_ID;
+        const string VALID_DOCTYPE_NAME = "html";
+        const string QUIRKS_MODE_SYSTEM_ID = "http://www.ibm.com/data/dtd/v11/ibmxhtml1-transitional.dtd";
         static readonly string[] QUIRKS_MODE_PUBLIC_ID_PREFIXES;
         static readonly string[] QUIRKS_MODE_NO_SYSTEM_ID_PUBLIC_ID_PREFIXES;
         static readonly string[] QUIRKS_MODE_PUBLIC_IDS;
@@ -17,8 +17,6 @@ namespace ParseFive.Common
 
 
         static Doctype() {
-            VALID_DOCTYPE_NAME = "html";
-            QUIRKS_MODE_SYSTEM_ID = "http://www.ibm.com/data/dtd/v11/ibmxhtml1-transitional.dtd";
             QUIRKS_MODE_PUBLIC_ID_PREFIXES = new[] {
                 "+//silmaril//dtd html pro v0r11 19970101//en",
                 "-//advasoft ltd//dtd html 3.0 aswedit + extensions//en",
