@@ -1,4 +1,4 @@
-﻿using ParseFive.Extensions;
+using ParseFive.Extensions;
 using DOCUMENT_MODE = HTML.DOCUMENT_MODE;
 
 namespace ParseFive.Common
@@ -7,13 +7,13 @@ namespace ParseFive.Common
     {
         //var DOCUMENT_MODE = require('./html').DOCUMENT_MODE;
         //Const
-        static string VALID_DOCTYPE_NAME;
-        static string QUIRKS_MODE_SYSTEM_ID;
-        static string[] QUIRKS_MODE_PUBLIC_ID_PREFIXES;
-        static string[] QUIRKS_MODE_NO_SYSTEM_ID_PUBLIC_ID_PREFIXES;
-        static string[] QUIRKS_MODE_PUBLIC_IDS;
-        static string[] LIMITED_QUIRKS_PUBLIC_ID_PREFIXES;
-        static string[] LIMITED_QUIRKS_WITH_SYSTEM_ID_PUBLIC_ID_PREFIXES;
+        static readonly string VALID_DOCTYPE_NAME;
+        static readonly string QUIRKS_MODE_SYSTEM_ID;
+        static readonly string[] QUIRKS_MODE_PUBLIC_ID_PREFIXES;
+        static readonly string[] QUIRKS_MODE_NO_SYSTEM_ID_PUBLIC_ID_PREFIXES;
+        static readonly string[] QUIRKS_MODE_PUBLIC_IDS;
+        static readonly string[] LIMITED_QUIRKS_PUBLIC_ID_PREFIXES;
+        static readonly string[] LIMITED_QUIRKS_WITH_SYSTEM_ID_PUBLIC_ID_PREFIXES;
 
 
         static Doctype() {
