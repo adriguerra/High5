@@ -566,7 +566,7 @@ namespace ParseFive.Tokenizer
 
                 //NOTE: if we have at least one digit this is a numeric entity for sure, so we consume it
                 if (nextCp != ɑ.EOF && Index.isDigit(nextCp, isHex))
-                    return [this.consumeNumericEntity(isHex)];
+                    return new[] { this.consumeNumericEntity(isHex) };
 
                 //NOTE: otherwise this is a bogus number entity and a parse error. Unconsume the number sign
                 //and the 'x'-character if appropriate.
