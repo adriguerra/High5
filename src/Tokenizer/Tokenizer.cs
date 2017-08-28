@@ -612,7 +612,7 @@ namespace ParseFive.Tokenizer
 
             if (!this.ensureHibernation())
             {
-                if (referencedCodePoints)
+                if (referencedCodePoints.IsTruthy())
                     this.emitSeveralCodePoints(referencedCodePoints);
 
                 else
@@ -1585,7 +1585,7 @@ namespace ParseFive.Tokenizer
     var referencedCodePoints = this.consumeCharacterReference(cp, true);
 
     if (!this.ensureHibernation()) {
-        if (referencedCodePoints) {
+        if (referencedCodePoints.IsTruthy()) {
             for (var i = 0; i < referencedCodePoints.length; i++)
                 this.currentAttr.value += toChar(referencedCodePoints[i]);
         }
