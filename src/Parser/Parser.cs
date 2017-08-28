@@ -702,9 +702,9 @@ namespace ParseFive.Parser
         }
 
         //Steps 9 and 10 of the algorithm
-        static Node aaObtainFurthestBlock(Parser p, IEntry formattingElementEntry)
+        static Element aaObtainFurthestBlock(Parser p, IEntry formattingElementEntry)
         {
-            Node furthestBlock = null;
+            Element furthestBlock = null;
 
             for (var i = p.openElements.stackTop; i >= 0; i--)
             {
