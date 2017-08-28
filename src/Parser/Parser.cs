@@ -66,7 +66,7 @@ namespace ParseFive.Parser
             //    new LocationInfoParserMixin(this);
         }
         // API
-        Document parse(string html)
+        public Document parse(string html)
         {
             var document = this.treeAdapter.createDocument();
 
@@ -77,7 +77,7 @@ namespace ParseFive.Parser
             return document;
         }
 
-        DocumentFragment parseFragment(string html, Node fragmentContext)
+        public DocumentFragment parseFragment(string html, Node fragmentContext)
         {
             //NOTE: use <template> element as a fragment context if context element was not provided,
             //so we will parse in "forgiving" manner
