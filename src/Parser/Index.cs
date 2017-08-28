@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using ParseFive.Common;
@@ -23,11 +23,13 @@ using ATTRS = HTML.ATTRS;
 
 namespace ParseFive.Parser
 {
+    using static TreeAdapters.StockTreeAdapters;
+
     class Index
     {
-        public static class DEFAULT_OPTIONS {
-            const bool locationInfo = false;
-            const TreeAdapter treeAdapter = defaultTreeAdapter; //TODO
+        public class Options {
+            public readonly bool locationInfo = false;
+            readonly TreeAdapter treeAdapter = defaultTreeAdapter; //TODO
         }
 
         //Misc constants

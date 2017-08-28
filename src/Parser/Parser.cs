@@ -19,7 +19,7 @@ namespace ParseFive.Parser
 {
     class Parser
     {
-        TreeAdapter treeAdapter;
+        readonly TreeAdapter treeAdapter;
         Element pendingScript;
         private string originalInsertionMode;
         private Element headElement;
@@ -54,7 +54,7 @@ namespace ParseFive.Parser
         }
 
         //Parser
-        public Parser(TreeAdapter treeAdapter, object pendingScript)
+        public Parser(TreeAdapter treeAdapter)
         {
             //this.options = mergeOptions(DEFAULT_OPTIONS, options);
 
@@ -112,7 +112,7 @@ namespace ParseFive.Parser
         //Bootstrap parser
         private void _bootstrap(Node document, Node fragmentContext)
         {
-            this.tokenizer = new Tokenizer.Tokenizer(this.options);
+            this.tokenizer = new Tokenizer.Tokenizer();
 
             this.stopped = false;
 

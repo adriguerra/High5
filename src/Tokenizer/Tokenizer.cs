@@ -110,7 +110,7 @@ namespace ParseFive.Tokenizer
         //public string state { get => _state; set => _state = value; }
 
         //Tokenizer
-        Tokenizer()
+        public Tokenizer()
         {
             this.preprocessor = new Preprocessor();
 
@@ -131,11 +131,6 @@ namespace ParseFive.Tokenizer
             this.currentCharacterToken = null;
             this.currentToken = null;
             this.currentAttr = null;
-        }
-
-        public Tokenizer(object options) //TODO
-        {
-            this.options = options;
         }
 
 
