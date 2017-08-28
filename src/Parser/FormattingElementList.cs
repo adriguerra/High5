@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using ParseFive.Extensions;
 using System.Text;
-using NeAttrsMap = System.Collections.Generic.Dictionary<string, int>;
+using NeAttrsMap = System.Collections.Generic.Dictionary<string, string>;
 using ParseFive.Tokenizer;
 //using Attrs = ParseFive.Extensions.List<Attr>;
 
@@ -34,9 +34,9 @@ public class ElementEntry : IEntry
 public interface TreeAdapter
 {
     object options { get; set; }
-    List<Attr> getAttrList(object o);
-    string getTagName(Element e);
-    string getNamespaceURI(object o);
+    List<Attr> getAttrList(Node o);
+    string getTagName(Node e);
+    string getNamespaceURI(Node o);
     Document createDocument();
     Element createElement(string tEMPLATE, string hTML, List<Attr> p);
     Element getFirstChild(Element documentMock);
@@ -44,30 +44,23 @@ public interface TreeAdapter
     void setDocumentType(object document, string name, string publicId, string systemId);
     void insertText(object parent, string chars);
     void insertTextBefore(object parent, object chars, Element beforeElement);
-    void appendChild(object parent, Element element);
+    void appendChild(Node parent, Node element);
     void insertBefore(object parent, Element element, Element beforeElement);
-    object getParentNode(Element openElement);
+    Node getParentNode(Node openElement);
     Element getTemplateContent(Element openElement);
-    object createCommentNode(string data);
+    Comment createCommentNode(string data);
     void detachNode(object child);
     void setTemplateContent(object tmpl, object content);
     void adoptAttributes(object p, List<Attr> attrs);
-    void setDocumentMode(Document document, string mode);
-    string getDocumentMode(Document document);
+    void setDocumentMode(Node document, string mode);
+    string getDocumentMode(Node document);
 }
 
-public class Document
-{
-
-}
-public class DocumentFragment
-{
-
-}
-public class Element
-{
-
-}
+public class Node {}
+public class Document : Node {}
+public class DocumentFragment : Node {}
+public class Element : Node {}
+public class Comment: Node {}
 
 namespace ParseFive.Parser
 {
@@ -75,7 +68,7 @@ namespace ParseFive.Parser
     {
         const int NOAH_ARK_CAPACITY = 3;
 
-        Int length;
+        public int length;
         public List<IEntry> entries;
         public TreeAdapter treeAdapter;
         public object bookmark;
@@ -89,9 +82,9 @@ namespace ParseFive.Parser
             entries = new List<IEntry>();
         }
 
-        private List<object> getNoahArkConditionCandidates(Element newElement)
+        private List<(int idx, List<Attr> attrs)> getNoahArkConditionCandidates(Element newElement)
         {
-            var candidates = new List<Object>();
+            var candidates = new List<(int idx, List<Attr> attrs)>();
 
             if (length >= NOAH_ARK_CAPACITY)
             {
@@ -113,14 +106,14 @@ namespace ParseFive.Parser
                                       elementAttrs.length == neAttrsLength;
 
                     if (isCandidate)
-                        candidates.push(new { idx = i, attrs = elementAttrs });
+                        candidates.push((idx: i, attrs: elementAttrs));
                 }
             }
 
-            return candidates.Count < NOAH_ARK_CAPACITY ? new List<object>() : candidates;
+            return candidates.Count < NOAH_ARK_CAPACITY ? new List<(int, List<Attr>)>() : candidates;
         }
 
-        private void ensureNoahArkCondition(object newElement)
+        private void ensureNoahArkCondition(Element newElement)
         {
             var candidates = this.getNoahArkConditionCandidates(newElement);
             var cLength = candidates.length;
@@ -194,7 +187,7 @@ namespace ParseFive.Parser
 
         public void clearToLastMarker()
         {
-            while (this.length)
+            while (this.length.IsTruthy())
             {
                 var entry = this.entries.pop();
 

@@ -20,4 +20,8 @@
     <OutputPath>..\bin\Release\netstandard1.0\</OutputPath>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="System.ValueTuple" Version="4.4.0" />
+  </ItemGroup>
+
 </Project>
