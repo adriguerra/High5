@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Attrs = ParseFive.Extensions.List<Attr>;
@@ -8,6 +8,7 @@ using ɑ = ParseFive.Common.Unicode.CODE_POINTS;
 using ɑɑ = ParseFive.Common.Unicode.CODE_POINT_SEQUENCES;
 using static ParseFive.Tokenizer.Index;
 using ParseFive.Extensions;
+using static ParseFive.Tokenizer.NamedEntityData;
 
 namespace ParseFive.Tokenizer
 {
