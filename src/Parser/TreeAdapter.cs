@@ -4,7 +4,6 @@ namespace ParseFive
 
     public interface TreeAdapter
     {
-        object options { get; set; }
         List<Attr> getAttrList(Node o);
         string getTagName(Node e);
         string getNamespaceURI(Node o);
