@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+// ReSharper disable InconsistentNaming
 
 namespace ParseFive.Common
 {
-    class Unicode
+    static class Unicode
     {
         public const char REPLACEMENT_CHARACTER = '\uFFFD';
 
@@ -39,6 +37,7 @@ namespace ParseFive.Common
             public const int LATIN_SMALL_F = 0x66;
             public const int LATIN_SMALL_X = 0x78;
             public const int LATIN_SMALL_Z = 0x7A;
+            // ReSharper disable once MemberHidesStaticFromOuterClass
             public const int REPLACEMENT_CHARACTER = 0xFFFD;
         }
 

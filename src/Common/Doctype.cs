@@ -1,5 +1,6 @@
 using ParseFive.Extensions;
 using DOCUMENT_MODE = HTML.DOCUMENT_MODE;
+// ReSharper disable InconsistentNaming
 
 namespace ParseFive.Common
 {
@@ -111,7 +112,7 @@ namespace ParseFive.Common
 
         static string enquoteDoctypeId(string id)
         {
-            char quote = id.IndexOf('"') != -1
+            char quote = id.indexOf('"') != -1
                          ? '\\'
                          : '"';
             return quote + id + quote;
@@ -119,9 +120,9 @@ namespace ParseFive.Common
 
         static bool hasPrefix(string publicId, string [] prefixes)
         {
-            for (int i = 0; i < prefixes.Length; i++)
+            for (var i = 0; i < prefixes.Length; i++)
             {
-                if (publicId.IndexOf(prefixes[i]) == 0)
+                if (publicId.indexOf(prefixes[i]) == 0)
                     return true;
                 
             }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using ParseFive.Extensions;
 using Attrs = ParseFive.Extensions.List<Attr>;
@@ -26,6 +26,7 @@ public class Attr
 
 namespace ParseFive.Common
 {
+    using Compatibility;
     using Extensions;
     using Tokenizer = Tokenizer.Tokenizer;
 
@@ -245,9 +246,7 @@ namespace ParseFive.Common
         {
             for (var i = 0; i < token.attrs.length; i++)
             {
-                var adjustedAttrName = SVG_ATTRS_ADJUSTMENT_MAP[token.attrs[i].name];
-
-                if (adjustedAttrName)
+                if (SVG_ATTRS_ADJUSTMENT_MAP.TryGetValue(token.attrs[i].name, out var adjustedAttrName))
                     token.attrs[i].name = adjustedAttrName;
             }
         }
@@ -256,9 +255,7 @@ namespace ParseFive.Common
         {
             for (var i = 0; i < token.attrs.length; i++)
             {
-                var adjustedAttrEntry = XML_ATTRS_ADJUSTMENT_MAP[token.attrs[i].name];
-
-                if (adjustedAttrEntry)
+                if (XML_ATTRS_ADJUSTMENT_MAP.TryGetValue(token.attrs[i].name, out var adjustedAttrEntry))
                 {
                     token.attrs[i].prefix = adjustedAttrEntry.prefix;
                     token.attrs[i].name = adjustedAttrEntry.name;
@@ -270,9 +267,7 @@ namespace ParseFive.Common
 
         public static void adjustTokenSVGTagName(Token token)
         {
-            var adjustedTagName = SVG_TAG_NAMES_ADJUSTMENT_MAP[token.tagName];
-
-            if (adjustedTagName)
+            if (SVG_TAG_NAMES_ADJUSTMENT_MAP.TryGetValue(token.tagName, out var adjustedTagName))
                 token.tagName = adjustedTagName;
         }
 
@@ -302,10 +297,10 @@ namespace ParseFive.Common
 
         public static bool isIntegrationPoint(string tn, string ns, List<Attr> attrs, string foreignNS)
         {
-            if ((!foreignNS || foreignNS == NS.HTML) && isHtmlIntegrationPoint(tn, ns, attrs))
+            if ((!foreignNS.isTruthy() || foreignNS == NS.HTML) && isHtmlIntegrationPoint(tn, ns, attrs))
                 return true;
 
-            if ((!foreignNS || foreignNS == NS.MATHML) && isMathMLTextIntegrationPoint(tn, ns))
+            if ((!foreignNS.isTruthy() || foreignNS == NS.MATHML) && isMathMLTextIntegrationPoint(tn, ns))
                 return true;
 
             return false;

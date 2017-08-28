@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +12,12 @@ namespace ParseFive.Extensions
     }
     public static class Extensions
     {
+        public static int indexOf(this string str, char ch) =>
+            str.IndexOf(ch);
+
+        public static int indexOf(this string str, string search) =>
+            str.IndexOf(search, StringComparison.Ordinal);
+
         public static string toLowerCase(this String str)
         {
             return str.ToLower();
