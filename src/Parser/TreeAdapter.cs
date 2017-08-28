@@ -4,25 +4,50 @@ namespace ParseFive
 
     public interface TreeAdapter
     {
-        List<Attr> getAttrList(Node element);
-        string getTagName(Node element);
-        string getNamespaceURI(Node element);
+        // Node construction
+
         Document createDocument();
-        Element createElement(string tagName, string namespaceURI, List<Attr> attrs);
-        Element getFirstChild(Element node);
         DocumentFragment createDocumentFragment();
-        void setDocumentType(object document, string name, string publicId, string systemId);
-        void insertText(object parent, string chars);
-        void insertTextBefore(object parentNode, object text, Element referenceNode);
+        Element createElement(string tagName, string namespaceURI, List<Attr> attrs);
+        Comment createCommentNode(string data);
+        Text createTextNode(string value);
+
+        // Tree mutation
+
         void appendChild(Node parentNode, Node newNode);
         void insertBefore(object parentNode, Element newNode, Element referenceNode);
-        Node getParentNode(Node node);
-        Element getTemplateContent(Element templateElement);
-        Comment createCommentNode(string data);
-        void detachNode(object node);
         void setTemplateContent(object templateElement, object contentElement);
-        void adoptAttributes(object recipient, List<Attr> attrs);
+        Element getTemplateContent(Element templateElement);
+        void setDocumentType(object document, string name, string publicId, string systemId);
         void setDocumentMode(Node document, string mode);
         string getDocumentMode(Node document);
+        void detachNode(object node);
+        void insertText(object parent, string chars);
+        void insertTextBefore(object parentNode, object text, Element referenceNode);
+        void adoptAttributes(object recipient, List<Attr> attrs);
+
+        // Tree traversing
+
+        Element getFirstChild(Element node);
+        Node getChildNodes(Node node);
+        Node getParentNode(Node node);
+        List<Attr> getAttrList(Node element);
+
+        // Node data
+
+        string getTagName(Node element);
+        string getNamespaceURI(Node element);
+        string getTextNodeContent(Node textNode);
+        string getCommentNodeContent(Node commentNode);
+        string getDocumentTypeNodeName(Node doctypeNode);
+        string getDocumentTypeNodePublicId(Node doctypeNode);
+        string getDocumentTypeNodeSystemId(Node doctypeNode);
+
+        // Node types
+
+        bool isTextNode(Node node);
+        bool isCommentNode(Node node);
+        bool isDocumentTypeNode(Node node);
+        bool isElementNode(Node node);
     }
 }
