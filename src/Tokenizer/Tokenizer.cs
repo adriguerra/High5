@@ -163,7 +163,7 @@ namespace ParseFive.Tokenizer
         //API
         public Token getNextToken()
         {
-            while (!this.tokenQueue.length && this.active)
+            while (!this.tokenQueue.length && this.active) //TODO should work?
             {
                 this.hibernationSnapshot();
 

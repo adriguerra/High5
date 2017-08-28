@@ -9,7 +9,8 @@ using ParseFive.Tokenizer;
 public abstract class IEntry
 {
     public string type { get; set; }
-    public string element { get; set; }
+    public Element element { get; set; }
+    public Token token { get; set; }
 }
 
 public class MarkerEntry : IEntry
@@ -22,9 +23,7 @@ public class MarkerEntry : IEntry
 
 public class ElementEntry : IEntry
 {
-    public Token token { get; set; }
-
-    public ElementEntry(string type, string element, Token token)
+    public ElementEntry(string type, Element element, Token token)
     {
         this.type = type;
         this.element = element;
@@ -36,24 +35,25 @@ public interface TreeAdapter
 {
     object options { get; set; }
     List<Attr> getAttrList(object o);
-    string getTagName(object o);
+    string getTagName(Element e);
     string getNamespaceURI(object o);
     Document createDocument();
-    Document createElement(string tEMPLATE, string hTML, List<Attr> p);
-    object getFirstChild(object documentMock);
-    object createDocumentFragment();
+    Element createElement(string tEMPLATE, string hTML, List<Attr> p);
+    Element getFirstChild(Element documentMock);
+    DocumentFragment createDocumentFragment();
     void setDocumentType(object document, string name, string publicId, string systemId);
     void insertText(object parent, string chars);
-    void insertTextBefore(object parent, object chars, object beforeElement);
-    void appendChild(object parent, object element);
-    void insertBefore(object parent, object element, object beforeElement);
-    object getParentNode(object openElement);
-    object getTemplateContent(object openElement);
+    void insertTextBefore(object parent, object chars, Element beforeElement);
+    void appendChild(object parent, Element element);
+    void insertBefore(object parent, Element element, Element beforeElement);
+    object getParentNode(Element openElement);
+    Element getTemplateContent(Element openElement);
     object createCommentNode(string data);
     void detachNode(object child);
     void setTemplateContent(object tmpl, object content);
     void adoptAttributes(object p, List<Attr> attrs);
     void setDocumentMode(Document document, string mode);
+    string getDocumentMode(Document document);
 }
 
 public class Document
@@ -61,6 +61,10 @@ public class Document
 
 }
 public class DocumentFragment
+{
+
+}
+public class Element
 {
 
 }
@@ -74,7 +78,7 @@ namespace ParseFive.Parser
         Int length;
         public List<IEntry> entries;
         public TreeAdapter treeAdapter;
-        object bookmark;
+        public object bookmark;
 
         public const string MARKER_ENTRY = "MARKER_ENTRY";
         public const string ELEMENT_ENTRY = "ELEMENT_ENTRY";
@@ -85,7 +89,7 @@ namespace ParseFive.Parser
             entries = new List<IEntry>();
         }
 
-        private List<object> getNoahArkConditionCandidates(object newElement)
+        private List<object> getNoahArkConditionCandidates(Element newElement)
         {
             var candidates = new List<Object>();
 
@@ -167,7 +171,7 @@ namespace ParseFive.Parser
             length++;
         }
 
-        public void pushElement(object element, Token token)
+        public void pushElement(Element element, Token token)
         {
             this.ensureNoahArkCondition(element);
 
@@ -218,7 +222,7 @@ namespace ParseFive.Parser
             return null;
         }
 
-        public IEntry getElementEntry(element)
+        public IEntry getElementEntry(Element element)
         {
             for (var i = this.length - 1; i >= 0; i--)
             {
@@ -229,6 +233,11 @@ namespace ParseFive.Parser
             }
 
             return null;
+        }
+
+        internal void insertElementAfterBookmark(Element newElement, Token token)
+        {
+            throw new NotImplementedException();
         }
     }
 }

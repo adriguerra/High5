@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using ParseFive.Common;
 using static ParseFive.Tokenizer.Tokenizer;
-using static ParseFive.Tokenizer;
+using static ParseFive.Parser.Parser;
+using ParseFive.Tokenizer;
 
 //using Tokenizer = require('../tokenizer');
 //using OpenElementStack = require('./open_element_stack');
@@ -94,7 +95,7 @@ namespace ParseFive.Parser
         public static IDictionary<string, IDictionary<string, Action<Parser, Tokenizer.Token>>> _ =
             new Dictionary<string, IDictionary<string, Action<Parser, Tokenizer.Token>>>
             {
-                [INITIAL_MODE] = new Dictionary<string, string>
+                [INITIAL_MODE] = new Dictionary<string, Action<Parser, Token>>
                 {
                     [CHARACTER_TOKEN] = tokenInInitialMode,
                     [NULL_CHARACTER_TOKEN] = tokenInInitialMode,
@@ -106,7 +107,7 @@ namespace ParseFive.Parser
                     [EOF_TOKEN] = tokenInInitialMode,
                 },
 
-                [BEFORE_HTML_MODE] = new Dictionary<string, string>
+                [BEFORE_HTML_MODE] = new Dictionary<string, Action<Parser, Token>>
                 {
                     [CHARACTER_TOKEN] = tokenBeforeHtml,
                     [NULL_CHARACTER_TOKEN] = tokenBeforeHtml,
@@ -118,7 +119,7 @@ namespace ParseFive.Parser
                     [EOF_TOKEN] = tokenBeforeHtml,
                 },
 
-                [BEFORE_HEAD_MODE] = new Dictionary<string, string>
+                [BEFORE_HEAD_MODE] = new Dictionary<string, Action<Parser, Token>>
                 {
                     [CHARACTER_TOKEN] = tokenBeforeHead,
                     [NULL_CHARACTER_TOKEN] = tokenBeforeHead,
@@ -130,7 +131,7 @@ namespace ParseFive.Parser
                     [EOF_TOKEN] = tokenBeforeHead,
                 },
 
-                [IN_HEAD_MODE] = new Dictionary<string, string>
+                [IN_HEAD_MODE] = new Dictionary<string, Action<Parser, Token>>
                 {
                     [CHARACTER_TOKEN] = tokenInHead,
                     [NULL_CHARACTER_TOKEN] = tokenInHead,
@@ -142,7 +143,7 @@ namespace ParseFive.Parser
                     [EOF_TOKEN] = tokenInHead,
                 },
 
-                [AFTER_HEAD_MODE] = new Dictionary<string, string>
+                [AFTER_HEAD_MODE] = new Dictionary<string, Action<Parser, Token>>
                 {
                     [CHARACTER_TOKEN] = tokenAfterHead,
                     [NULL_CHARACTER_TOKEN] = tokenAfterHead,
@@ -154,7 +155,7 @@ namespace ParseFive.Parser
                     [EOF_TOKEN] = tokenAfterHead,
                 },
 
-                [IN_BODY_MODE] = new Dictionary<string, string>
+                [IN_BODY_MODE] = new Dictionary<string, Action<Parser, Token>>
                 {
                     [CHARACTER_TOKEN] = characterInBody,
                     [NULL_CHARACTER_TOKEN] = ignoreToken,
@@ -166,7 +167,7 @@ namespace ParseFive.Parser
                     [EOF_TOKEN] = eofInBody,
                 },
 
-                [TEXT_MODE] = new Dictionary<string, string>
+                [TEXT_MODE] = new Dictionary<string, Action<Parser, Token>>
                 {
                     [CHARACTER_TOKEN] = insertCharacters,
                     [NULL_CHARACTER_TOKEN] = insertCharacters,
@@ -178,7 +179,7 @@ namespace ParseFive.Parser
                     [EOF_TOKEN] = eofInText,
                 },
 
-                [IN_TABLE_MODE] = new Dictionary<string, string>
+                [IN_TABLE_MODE] = new Dictionary<string, Action<Parser, Token>>
                 {
                     [CHARACTER_TOKEN] = characterInTable,
                     [NULL_CHARACTER_TOKEN] = characterInTable,
@@ -190,7 +191,7 @@ namespace ParseFive.Parser
                     [EOF_TOKEN] = eofInBody,
                 },
 
-                [IN_TABLE_TEXT_MODE] = new Dictionary<string, string>
+                [IN_TABLE_TEXT_MODE] = new Dictionary<string, Action<Parser, Token>>
                 {
                     [CHARACTER_TOKEN] = characterInTableText,
                     [NULL_CHARACTER_TOKEN] = ignoreToken,
@@ -200,9 +201,9 @@ namespace ParseFive.Parser
                     [START_TAG_TOKEN] = tokenInTableText,
                     [END_TAG_TOKEN] = tokenInTableText,
                     [EOF_TOKEN] = tokenInTableText,
-                }
+                },
 
-                [IN_CAPTION_MODE] = new Dictionary<string, string>
+                [IN_CAPTION_MODE] = new Dictionary<string, Action<Parser, Token>>
                 {
                     [CHARACTER_TOKEN] = characterInBody,
                     [NULL_CHARACTER_TOKEN] = ignoreToken,
@@ -214,7 +215,7 @@ namespace ParseFive.Parser
                     [EOF_TOKEN] = eofInBody,
                 },
 
-                [IN_COLUMN_GROUP_MODE] = new Dictionary<string, string>
+                [IN_COLUMN_GROUP_MODE] = new Dictionary<string, Action<Parser, Token>>
                 {
                     [CHARACTER_TOKEN] = tokenInColumnGroup,
                     [NULL_CHARACTER_TOKEN] = tokenInColumnGroup,
@@ -226,7 +227,7 @@ namespace ParseFive.Parser
                     [EOF_TOKEN] = eofInBody,
                 },
 
-                [IN_TABLE_BODY_MODE] = new Dictionary<string, string>
+                [IN_TABLE_BODY_MODE] = new Dictionary<string, Action<Parser, Token>>
                 {
                     [CHARACTER_TOKEN] = characterInTable,
                     [NULL_CHARACTER_TOKEN] = characterInTable,
@@ -238,7 +239,7 @@ namespace ParseFive.Parser
                     [EOF_TOKEN] = eofInBody,
                 },
 
-                [IN_ROW_MODE] = new Dictionary<string, string>
+                [IN_ROW_MODE] = new Dictionary<string, Action<Parser, Token>>
                 {
                     [CHARACTER_TOKEN] = characterInTable,
                     [NULL_CHARACTER_TOKEN] = characterInTable,
@@ -250,7 +251,7 @@ namespace ParseFive.Parser
                     [EOF_TOKEN] = eofInBody,
                 },
 
-                [IN_CELL_MODE] = new Dictionary<string, string>
+                [IN_CELL_MODE] = new Dictionary<string, Action<Parser, Token>>
                 {
                     [CHARACTER_TOKEN] = characterInBody,
                     [NULL_CHARACTER_TOKEN] = ignoreToken,
@@ -262,7 +263,7 @@ namespace ParseFive.Parser
                     [EOF_TOKEN] = eofInBody,
                 },
 
-                [IN_SELECT_MODE] = new Dictionary<string, string>
+                [IN_SELECT_MODE] = new Dictionary<string, Action<Parser, Token>>
                 {
                     [CHARACTER_TOKEN] = insertCharacters,
                     [NULL_CHARACTER_TOKEN] = ignoreToken,
@@ -274,7 +275,7 @@ namespace ParseFive.Parser
                     [EOF_TOKEN] = eofInBody,
                 },
 
-                [IN_SELECT_IN_TABLE_MODE] = new Dictionary<string, string>
+                [IN_SELECT_IN_TABLE_MODE] = new Dictionary<string, Action<Parser, Token>>
                 {
                     [CHARACTER_TOKEN] = insertCharacters,
                     [NULL_CHARACTER_TOKEN] = ignoreToken,
@@ -286,7 +287,7 @@ namespace ParseFive.Parser
                     [EOF_TOKEN] = eofInBody,
                 },
 
-                [IN_TEMPLATE_MODE] = new Dictionary<string, string>
+                [IN_TEMPLATE_MODE] = new Dictionary<string, Action<Parser, Token>>
                 {
                     [CHARACTER_TOKEN] = characterInBody,
                     [NULL_CHARACTER_TOKEN] = ignoreToken,
@@ -298,7 +299,7 @@ namespace ParseFive.Parser
                     [EOF_TOKEN] = eofInTemplate,
                 },
 
-                [AFTER_BODY_MODE] = new Dictionary<string, string>
+                [AFTER_BODY_MODE] = new Dictionary<string, Action<Parser, Token>>
                 {
                     [CHARACTER_TOKEN] = tokenAfterBody,
                     [NULL_CHARACTER_TOKEN] = tokenAfterBody,
@@ -310,7 +311,7 @@ namespace ParseFive.Parser
                     [EOF_TOKEN] = stopParsing,
                 },
 
-                [IN_FRAMESET_MODE] = new Dictionary<string, string>
+                [IN_FRAMESET_MODE] = new Dictionary<string, Action<Parser, Token>>
                 {
                     [CHARACTER_TOKEN] = ignoreToken,
                     [NULL_CHARACTER_TOKEN] = ignoreToken,
@@ -322,7 +323,7 @@ namespace ParseFive.Parser
                     [EOF_TOKEN] = stopParsing,
                 },
 
-                [AFTER_FRAMESET_MODE] = new Dictionary<string, string>
+                [AFTER_FRAMESET_MODE] = new Dictionary<string, Action<Parser, Token>>
                 {
                     [CHARACTER_TOKEN] = ignoreToken,
                     [NULL_CHARACTER_TOKEN] = ignoreToken,
@@ -334,7 +335,7 @@ namespace ParseFive.Parser
                     [EOF_TOKEN] = stopParsing,
                 },
 
-                [AFTER_AFTER_BODY_MODE] = new Dictionary<string, string>
+                [AFTER_AFTER_BODY_MODE] = new Dictionary<string, Action<Parser, Token>>
                 {
                     [CHARACTER_TOKEN] = tokenAfterAfterBody,
                     [NULL_CHARACTER_TOKEN] = tokenAfterAfterBody,
@@ -346,7 +347,7 @@ namespace ParseFive.Parser
                     [EOF_TOKEN] = stopParsing,
                 },
 
-                [AFTER_AFTER_FRAMESET_MODE] = new Dictionary<string, Action<object, object>>
+                [AFTER_AFTER_FRAMESET_MODE] = new Dictionary<string, Action<Parser, Token>>
                 {
                     [CHARACTER_TOKEN] = ignoreToken,
                     [NULL_CHARACTER_TOKEN] = ignoreToken,
@@ -358,9 +359,5 @@ namespace ParseFive.Parser
                     [EOF_TOKEN] = stopParsing,
                 },
             };
-
-        static void stopParsing(object p, object token) { }
-
-
     }
 }
