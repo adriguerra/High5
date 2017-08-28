@@ -420,7 +420,7 @@ namespace ParseFive.Tokenizer
             this.appendCharToCurrentCharacterToken(type, toChar(cp));
         }
 
-        void emitSeveralCodePoints(Extensions.List<int> codePoints)
+        void emitSeveralCodePoints(ISomeList<int> codePoints)
         {
             for (var i = 0; i < codePoints.length; i++)
                 this.emitCodePoint(codePoints[i]);
@@ -462,9 +462,9 @@ namespace ParseFive.Tokenizer
 
         // NOTE: for the details on this algorithm see
         // https://github.com/inikulin/parse5/tree/master/scripts/generate_named_entity_data/README.md
-        int[] consumeNamedEntity(bool inAttr)
+        Array<int> consumeNamedEntity(bool inAttr)
         {
-            int[] referencedCodePoints = null; //TODO check int
+            Array<int> referencedCodePoints = null; //TODO check int
             int referenceSize = 0;
             int? cp = null; //Not void 0!
             var consumedCount = 0;
@@ -478,7 +478,7 @@ namespace ParseFive.Tokenizer
 
                 if (nodeWithData)
                 {
-                    referencedCodePoints = (current & Index.DATA_DUPLET_FLAG) == Index.DATA_DUPLET_FLAG ? new[] { neTree[++i], neTree[++i] } : new[] { neTree[++i] };
+                    referencedCodePoints = new Array<int>((current & Index.DATA_DUPLET_FLAG) == Index.DATA_DUPLET_FLAG ? new[] { neTree[++i], neTree[++i] } : new[] { neTree[++i] });
                     referenceSize = consumedCount;
 
                     if (cp == ɑ.SEMICOLON)
@@ -540,7 +540,7 @@ namespace ParseFive.Tokenizer
             return null;
         }
 
-        int[] consumeCharacterReference(int startCp, bool inAttr)
+        Array<int> consumeCharacterReference(int startCp, bool inAttr)
         {
             if (Index.isWhitespace(startCp) || startCp == ɑ.GREATER_THAN_SIGN ||
                 startCp == ɑ.AMPERSAND || startCp == this.additionalAllowedCp || startCp == ɑ.EOF)
@@ -566,7 +566,7 @@ namespace ParseFive.Tokenizer
 
                 //NOTE: if we have at least one digit this is a numeric entity for sure, so we consume it
                 if (nextCp != ɑ.EOF && Index.isDigit(nextCp, isHex))
-                    return new[] { this.consumeNumericEntity(isHex) };
+                    return new Array<int>(new[] { this.consumeNumericEntity(isHex) });
 
                 //NOTE: otherwise this is a bogus number entity and a parse error. Unconsume the number sign
                 //and the 'x'-character if appropriate.
