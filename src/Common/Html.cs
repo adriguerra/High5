@@ -1,8 +1,4 @@
-﻿using System;
 using System.Collections.Generic;
-using System.Text;
-//using NS = ParseFive.Common.HTML.NAMESPACES;
-//using ɑ = ParseFive.Common.HTML.TAG_NAMES;
 using NS = HTML.NAMESPACES;
 using ɑ = HTML.TAG_NAMES;
 

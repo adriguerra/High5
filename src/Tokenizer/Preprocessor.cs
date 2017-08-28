@@ -6,6 +6,8 @@ using ɑ = ParseFive.Common.Unicode.CODE_POINTS;
 
 namespace ParseFive.Tokenizer
 {
+    using Compatibility;
+
     class Preprocessor
     {
         const int DEFAULT_BUFFER_WATERLINE = 1 << 16;
@@ -99,7 +101,7 @@ namespace ParseFive.Tokenizer
 
         public void write(string chunk, bool isLastChunk)
         {
-            if (this.html) //TODO
+            if (this.html.isTruthy())
                 this.html += chunk;
 
             else

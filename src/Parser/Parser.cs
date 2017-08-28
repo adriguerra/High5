@@ -12,6 +12,8 @@ using static ParseFive.Parser.Index;
 using static ParseFive.Common.ForeignContent;
 using static ParseFive.Common.Doctype;
 using UNICODE = ParseFive.Common.Unicode;
+// ReSharper disable InconsistentNaming
+// ReSharper disable ArrangeThisQualifier
 
 namespace ParseFive.Parser
 {

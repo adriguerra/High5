@@ -5,13 +5,33 @@ using System.Text;
 
 namespace ParseFive.Extensions
 {
-    public class List<T> : System.Collections.Generic.List<T>
+    public interface ISomeList<T>
+    {
+        Int length { get; }
+        T this[int index] { get; }
+    }
+
+    public class List<T> : System.Collections.Generic.List<T>, ISomeList<T>
     {
         public Int length => Count;
         
     }
+
+    public class Array<T> : ISomeList<T>
+    {
+        readonly T[] _array;
+
+        public Array(T[] array) => _array = array;
+        public T this[int index] => _array[index];
+        public Int length => _array.Length;
+    }
+
     public static class Extensions
     {
+        public static bool IsTruthy(this object o) => o != null;
+        public static bool IsTruthy(this int n) => n != 0;
+        public static bool IsTruthy(this Int n) => n != 0;
+
         public static int indexOf(this string str, char ch) =>
             str.IndexOf(ch);
 

@@ -164,7 +164,7 @@ namespace ParseFive.Tokenizer
         //API
         public Token getNextToken()
         {
-            while (!this.tokenQueue.length && this.active) //TODO should work?
+            while (!this.tokenQueue.length.IsTruthy() && this.active) //TODO should work?
             {
                 this.hibernationSnapshot();
 
@@ -225,9 +225,9 @@ namespace ParseFive.Tokenizer
             this.preprocessor.retreat();
         }
 
-        void unconsumeSeveral(Int count)
+        void unconsumeSeveral(int count)
         {
-            while (count--)
+            while ((count--).IsTruthy())
                 this.unconsume();
         }
 
@@ -237,11 +237,11 @@ namespace ParseFive.Tokenizer
             this.unconsume();
         }
 
-        bool consumeSubsequentIfMatch(int[] pattern, int startCp, bool caseSensitive)
+        bool consumeSubsequentIfMatch(Array<int> pattern, int startCp, bool caseSensitive)
         {
             var consumedCount = 0;
             bool isMatch = true;
-            int patternLength = pattern.length;
+            var patternLength = pattern.length;
             int patternPos = 0;
             int cp = startCp;
             int? patternCp = null;//TODO void 0;
@@ -372,7 +372,7 @@ namespace ParseFive.Tokenizer
 
         void emitCurrentCharacterToken()
         {
-            if (this.currentCharacterToken)
+            if (this.currentCharacterToken.IsTruthy())
             {
                 this.tokenQueue.push(this.currentCharacterToken);
                 this.currentCharacterToken = null;
@@ -397,10 +397,10 @@ namespace ParseFive.Tokenizer
         //3)CHARACTER_TOKEN - any character sequence which don't belong to groups 1 and 2 (e.g. 'abcdef1234@@#ɑ%^')
         void appendCharToCurrentCharacterToken(string type, char ch)
         {
-            if (this.currentCharacterToken && this.currentCharacterToken.type != type)
+            if (this.currentCharacterToken.IsTruthy() && this.currentCharacterToken.type != type)
                 this.emitCurrentCharacterToken();
 
-            if (this.currentCharacterToken)
+            if (this.currentCharacterToken.IsTruthy())
                 this.currentCharacterToken.chars += ch;
 
             else
@@ -474,11 +474,11 @@ namespace ParseFive.Tokenizer
             {
                 var current = neTree[i];
                 var inNode = current < Index.MAX_BRANCH_MARKER_VALUE;
-                var nodeWithData = inNode && current & Index.HAS_DATA_FLAG;
+                var nodeWithData = inNode && (current & Index.HAS_DATA_FLAG) == Index.HAS_DATA_FLAG;
 
                 if (nodeWithData)
                 {
-                    referencedCodePoints = current & Index.DATA_DUPLET_FLAG ? new[] { neTree[++i], neTree[++i] } : new[] { neTree[++i] }
+                    referencedCodePoints = (current & Index.DATA_DUPLET_FLAG) == Index.DATA_DUPLET_FLAG ? new[] { neTree[++i], neTree[++i] } : new[] { neTree[++i] };
                     referenceSize = consumedCount;
 
                     if (cp == ɑ.SEMICOLON)
@@ -499,15 +499,15 @@ namespace ParseFive.Tokenizer
                     break;
 
                 if (inNode)
-                    i = current & Index.HAS_BRANCHES_FLAG ? Index.findNamedEntityTreeBranch(i, cp.Value) : -1; //TODO check cp.Value
+                    i = (current & Index.HAS_BRANCHES_FLAG) == Index.HAS_BRANCHES_FLAG ? Index.findNamedEntityTreeBranch(i, cp.Value) : -1; //TODO check cp.Value
 
                 else
                     i = cp == current ? ++i : -1;
             }
 
 
-            if (referencedCodePoints)
-            { //TODO != null
+            if (referencedCodePoints.IsTruthy())
+            {
                 if (!semicolonTerminated)
                 {
                     //NOTE: unconsume excess (e.g. 'it' in '&notit')
