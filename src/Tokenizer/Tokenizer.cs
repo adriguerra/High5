@@ -657,7 +657,7 @@ namespace ParseFive.Tokenizer
 
             if (!this.ensureHibernation())
             {
-                if (referencedCodePoints)
+                if (referencedCodePoints.IsTruthy())
                     this.emitSeveralCodePoints(referencedCodePoints);
 
                 else
