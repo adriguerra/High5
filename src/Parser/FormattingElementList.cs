@@ -33,20 +33,38 @@ public class ElementEntry : IEntry
 
 public class Node
 {
+    internal string nodeName;
+    internal bool tagName;
+
     public Node ParentNode { get; internal set; }
-    public System.Collections.Generic.List<Node> ChildNodes { get; } = new System.Collections.Generic.List<Node>();
+    public List<Node> ChildNodes { get; } = new List<Node>();
 }
 public class Document : Node
 {
     public string Mode { get; internal set; }
 }
 public class DocumentFragment : Node {}
-public class Element : Node {}
-public class Comment : Node {}
-public class Text : Node {}
+public class Element : Node
+{
+    internal string tagName;
+    internal string namespaceURI;
+    internal List<Attr> attrs;
+}
+public class Comment : Node
+{
+    internal string data;
+}
+public class Text : Node
+{
+    internal string value;
+}
 
 public class DocumentType : Node
 {
+    internal string name;
+    internal string publicId;
+    internal string systemId;
+
     public string Name     { get; internal set; }
     public string PublicId { get; internal set; }
     public string SystemId { get; internal set; }
