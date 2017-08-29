@@ -17,7 +17,7 @@ using UNICODE = ParseFive.Common.Unicode;
 
 namespace ParseFive.Parser
 {
-    class Parser
+    public class Parser
     {
         readonly TreeAdapter treeAdapter;
         Element pendingScript;
@@ -35,7 +35,7 @@ namespace ParseFive.Parser
         private bool skipNextNewLine;
         private bool fosterParentingEnabled;
 
-        public Tokenizer.Tokenizer tokenizer { get; private set; }
+        Tokenizer.Tokenizer tokenizer;
         public bool stopped { get; private set; }
         public string insertionMode { get; private set; }
         private Node document { get; set; }
