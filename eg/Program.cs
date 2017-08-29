@@ -13,16 +13,22 @@ namespace Demo
         static void Main(string[] args)
         {
             string html;
+
             var source = args.FirstOrDefault() ?? "-";
             if (source == "-")
             {
                 html = Console.In.ReadToEnd();
             }
-            else
+            else if (Uri.TryCreate(source, UriKind.Absolute, out var url))
             {
                 using (var http = new HttpClient())
-                    html = http.GetStringAsync(source).GetAwaiter().GetResult();
+                    html = http.GetStringAsync(url).GetAwaiter().GetResult();
             }
+            else
+            {
+                html = File.ReadAllText(source);
+            }
+
             var parser = new Parser();
             var doc = parser.parse(html);
             string indent = string.Empty;
