@@ -43,25 +43,21 @@ public class Document : Node
 public class DocumentFragment : Node {}
 public class Element : Node
 {
-    internal string tagName;
-    internal string namespaceURI;
-    internal List<Attr> attrs;
+    public string TagName { get; }
+    public string NamespaceUri { get; }
+    public List<Attr> Attributes { get; }
 }
 public class Comment : Node
 {
-    internal string data;
+    public string Data { get; }
 }
 public class Text : Node
 {
-    internal string value;
+    public string Value { get; }
 }
 
 public class DocumentType : Node
 {
-    internal string name;
-    internal string publicId;
-    internal string systemId;
-
     public string Name     { get; internal set; }
     public string PublicId { get; internal set; }
     public string SystemId { get; internal set; }

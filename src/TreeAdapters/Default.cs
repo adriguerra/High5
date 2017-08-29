@@ -111,45 +111,45 @@ namespace ParseFive.TreeAdapters
 
         public List<Attr> getAttrList(Element element)
         {
-            return element.attrs;
+            return element.Attributes;
         }
 
         //Node data
         public string getTagName(Element element)
         {
-            return element.tagName;
+            return element.TagName;
         }
 
         public string getNamespaceURI(Element element)
         {
-            return element.namespaceURI;
+            return element.NamespaceUri;
         }
 
         public string getTextNodeContent(Text textNode)
         {
-            return textNode.value;
+            return textNode.Value;
         }
 
         public string getCommentNodeContent(Comment commentNode)
         {
-            return commentNode.data;
+            return commentNode.Data;
         }
 
         public string getDocumentTypeNodeName(DocumentType doctypeNode)
         {
-            return doctypeNode.name;
+            return doctypeNode.Name;
         }
 
         public string getDocumentTypeNodePublicId(DocumentType doctypeNode)
         {
-            return doctypeNode.publicId;
+            return doctypeNode.PublicId;
         }
 
         public string getDocumentTypeNodeSystemId(DocumentType doctypeNode)
         {
-            return doctypeNode.systemId;
+            return doctypeNode.SystemId;
         }
-        
+
         //Node types
         public bool isTextNode(Node node)
         {
