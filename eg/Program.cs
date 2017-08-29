@@ -12,10 +12,17 @@ namespace Demo
     {
         static void Main(string[] args)
         {
-            var url = new Uri(args.FirstOrDefault() ?? "https://www.example.com/");
             string html;
-            using (var http = new HttpClient())
-                html = http.GetStringAsync(url).GetAwaiter().GetResult();
+            var source = args.FirstOrDefault() ?? "-";
+            if (source == "-")
+            {
+                html = Console.In.ReadToEnd();
+            }
+            else
+            {
+                using (var http = new HttpClient())
+                    html = http.GetStringAsync(source).GetAwaiter().GetResult();
+            }
             var parser = new Parser();
             var doc = parser.parse(html);
             string indent = string.Empty;
