@@ -2859,7 +2859,7 @@ namespace ParseFive.Parser
         {
             if (causesExit(token) && !p.fragmentContext.IsTruthy())
             {
-                while (p.treeAdapter.getNamespaceURI(p.openElements.current) != NS.HTML && !p._isIntegrationPoint((Element) p.openElements.current))
+                while (p.treeAdapter.getNamespaceURI((Element) p.openElements.current) != NS.HTML && !p._isIntegrationPoint((Element) p.openElements.current))
                     p.openElements.pop();
 
                 p._processToken(token);

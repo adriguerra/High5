@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using ParseFive.Extensions;
 using ɑ = HTML.TAG_NAMES;
 using NS = HTML.NAMESPACES;
@@ -9,15 +9,15 @@ namespace ParseFive.Parser
     {
         TreeAdapter treeAdapter;
         public Element currentTmplContent { get; set; }
-        public Element current { get; set; }
+        public Node current { get; set; }
         public List<Element> items;
-        string currentTagName;
-        int tmplCount;
+        public string currentTagName { get; private set; }
+        public int tmplCount { get; private set; }
 
         public int stackTop;
 
         //Stack of open elements
-        public OpenElementStack(Document document, TreeAdapter treeAdapter)
+        public OpenElementStack(Node document, TreeAdapter treeAdapter)
         {
             this.stackTop = -1;
             this.items = new List<Element>();
@@ -125,15 +125,15 @@ namespace ParseFive.Parser
         //Update current element
         public bool _isInTemplate()
         {
-            return this.currentTagName == ɑ.TEMPLATE && this.treeAdapter.getNamespaceURI(this.current) == NS.HTML;
+            return this.currentTagName == ɑ.TEMPLATE && this.treeAdapter.getNamespaceURI((Element) this.current) == NS.HTML;
         }
 
         public void _updateCurrentElement()
         {
             this.current = this.items[this.stackTop];
-            this.currentTagName = this.current.IsTruthy() ? this.treeAdapter.getTagName(this.current) : null;
+            this.currentTagName = this.current.IsTruthy() ? this.treeAdapter.getTagName((Element) this.current) : null;
 
-            this.currentTmplContent = this._isInTemplate() ? this.treeAdapter.getTemplateContent(this.current) : null;
+            this.currentTmplContent = this._isInTemplate() ? this.treeAdapter.getTemplateContent((Element) this.current) : null;
         }
 
         //Mutations
@@ -182,7 +182,7 @@ namespace ParseFive.Parser
             while (this.stackTop > -1)
             {
                 string tn = this.currentTagName;
-                string ns = this.treeAdapter.getNamespaceURI(this.current);
+                string ns = this.treeAdapter.getNamespaceURI((Element) this.current);
 
                 this.pop();
 
@@ -209,7 +209,7 @@ namespace ParseFive.Parser
             while (this.stackTop > -1)
             {
                 string tn = this.currentTagName,
-                    ns = this.treeAdapter.getNamespaceURI(this.current);
+                    ns = this.treeAdapter.getNamespaceURI((Element) this.current);
 
                 this.pop();
 
@@ -223,7 +223,7 @@ namespace ParseFive.Parser
             while (this.stackTop > -1)
             {
                 string tn = this.currentTagName,
-                    ns = this.treeAdapter.getNamespaceURI(this.current);
+                    ns = this.treeAdapter.getNamespaceURI((Element) this.current);
 
                 this.pop();
 
@@ -245,7 +245,7 @@ namespace ParseFive.Parser
             while (this.currentTagName != ɑ.TABLE &&
                    this.currentTagName != ɑ.TEMPLATE &&
                    this.currentTagName != ɑ.HTML ||
-                   this.treeAdapter.getNamespaceURI(this.current) != NS.HTML)
+                   this.treeAdapter.getNamespaceURI((Element) this.current) != NS.HTML)
                 this.pop();
         }
 
@@ -256,7 +256,7 @@ namespace ParseFive.Parser
                    this.currentTagName != ɑ.THEAD &&
                    this.currentTagName != ɑ.TEMPLATE &&
                    this.currentTagName != ɑ.HTML ||
-                   this.treeAdapter.getNamespaceURI(this.current) != NS.HTML)
+                   this.treeAdapter.getNamespaceURI((Element) this.current) != NS.HTML)
                 this.pop();
         }
 
@@ -265,7 +265,7 @@ namespace ParseFive.Parser
             while (this.currentTagName != ɑ.TR &&
                    this.currentTagName != ɑ.TEMPLATE &&
                    this.currentTagName != ɑ.HTML ||
-                   this.treeAdapter.getNamespaceURI(this.current) != NS.HTML)
+                   this.treeAdapter.getNamespaceURI((Element) this.current) != NS.HTML)
                 this.pop();
         }
 
