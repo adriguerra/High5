@@ -95,6 +95,7 @@ namespace ParseFive.Parser
 
         public FormattingElementList(TreeAdapter treeAdapter)
         {
+            this.treeAdapter = treeAdapter;
             length = 0;
             entries = new List<IEntry>();
         }
