@@ -125,7 +125,7 @@ namespace ParseFive.Parser
             this.headElement = null;
             this.formElement = null;
 
-            this.openElements = new OpenElementStack((Element) this.document, this.treeAdapter);
+            this.openElements = new OpenElementStack(this.document, this.treeAdapter);
             this.activeFormattingElements = new FormattingElementList(this.treeAdapter);
 
             this.tmplInsertionModeStack = new List<string>();
@@ -473,7 +473,7 @@ namespace ParseFive.Parser
                 {
                     entry = this.activeFormattingElements.entries[i];
                     this._insertElement(entry.token, this.treeAdapter.getNamespaceURI(entry.element));
-                    entry.element = this.openElements.current;
+                    entry.element = (Element) this.openElements.current;
                 }
             }
         }
@@ -602,7 +602,7 @@ namespace ParseFive.Parser
 
         bool _shouldFosterParentOnInsertion()
         {
-            return this.fosterParentingEnabled && this._isElementCausesFosterParenting(this.openElements.current);
+            return this.fosterParentingEnabled && this._isElementCausesFosterParenting((Element) this.openElements.current);
         }
 
         Location _findFosterParentingLocation()
@@ -941,7 +941,7 @@ namespace ParseFive.Parser
             else if (tn == ɑ.HEAD)
             {
                 p._insertElement(token, NS.HTML);
-                p.headElement = p.openElements.current;
+                p.headElement = (Element) p.openElements.current;
                 p.insertionMode = IN_HEAD_MODE;
             }
 
@@ -960,7 +960,7 @@ namespace ParseFive.Parser
         public static void tokenBeforeHead(Parser p, Token token)
         {
             p._insertFakeElement(ɑ.HEAD);
-            p.headElement = p.openElements.current;
+            p.headElement = (Element) p.openElements.current;
             p.insertionMode = IN_HEAD_MODE;
             p._processToken(token);
         }
@@ -1176,7 +1176,7 @@ namespace ParseFive.Parser
                 p._insertElement(token, NS.HTML);
 
                 if (!inTemplate)
-                    p.formElement = p.openElements.current;
+                    p.formElement = (Element) p.openElements.current;
             }
         }
 
@@ -1250,14 +1250,14 @@ namespace ParseFive.Parser
 
             p._reconstructActiveFormattingElements();
             p._insertElement(token, NS.HTML);
-            p.activeFormattingElements.pushElement(p.openElements.current, token);
+            p.activeFormattingElements.pushElement((Element) p.openElements.current, token);
         }
 
         public static void bStartTagInBody(Parser p, Token token)
         {
             p._reconstructActiveFormattingElements();
             p._insertElement(token, NS.HTML);
-            p.activeFormattingElements.pushElement(p.openElements.current, token);
+            p.activeFormattingElements.pushElement((Element) p.openElements.current, token);
         }
 
         public static void nobrStartTagInBody(Parser p, Token token)
@@ -1271,7 +1271,7 @@ namespace ParseFive.Parser
             }
 
             p._insertElement(token, NS.HTML);
-            p.activeFormattingElements.pushElement(p.openElements.current, token);
+            p.activeFormattingElements.pushElement((Element) p.openElements.current, token);
         }
 
         public static void appletStartTagInBody(Parser p, Token token)
@@ -2034,7 +2034,7 @@ namespace ParseFive.Parser
         public static void endTagInText(Parser p, Token token)
         {
             if (token.tagName == ɑ.SCRIPT)
-                p.pendingScript = p.openElements.current;
+                p.pendingScript = (Element) p.openElements.current;
 
             p.openElements.pop();
             p.insertionMode = p.originalInsertionMode;
@@ -2132,7 +2132,7 @@ namespace ParseFive.Parser
             if (!p.formElement.IsTruthy() && p.openElements.tmplCount == 0)
             {
                 p._insertElement(token, NS.HTML);
-                p.formElement = p.openElements.current;
+                p.formElement = (Element) p.openElements.current;
                 p.openElements.pop();
             }
         }
@@ -2859,7 +2859,7 @@ namespace ParseFive.Parser
         {
             if (causesExit(token) && !p.fragmentContext.IsTruthy())
             {
-                while (p.treeAdapter.getNamespaceURI(p.openElements.current) != NS.HTML && !p._isIntegrationPoint(p.openElements.current))
+                while (p.treeAdapter.getNamespaceURI(p.openElements.current) != NS.HTML && !p._isIntegrationPoint((Element) p.openElements.current))
                     p.openElements.pop();
 
                 p._processToken(token);
