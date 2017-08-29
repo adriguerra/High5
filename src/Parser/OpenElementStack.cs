@@ -1,154 +1,455 @@
+﻿using System;
+using ParseFive.Extensions;
+using ɑ = HTML.TAG_NAMES;
+using NS = HTML.NAMESPACES;
+
 namespace ParseFive.Parser
 {
-    using System;
-    using Extensions;
-
     class OpenElementStack
     {
         TreeAdapter treeAdapter;
-        public Element currentTmplContent { get; }
-        public Element current { get; }
+        public Element currentTmplContent { get; set; }
+        public Element current { get; set; }
         public List<Element> items;
-        internal readonly string currentTagName;
-        internal readonly int tmplCount;
+        string currentTagName;
+        int tmplCount;
 
-        public int stackTop => items.length;
+        public int stackTop;
 
-        public OpenElementStack(Node document, TreeAdapter treeAdapter)
+        //Stack of open elements
+        public OpenElementStack(Document document, TreeAdapter treeAdapter)
         {
-            this.current = (Element) document;
+            this.stackTop = -1;
+            this.items = new List<Element>();
+            this.current = document;
+            this.currentTagName = null;
+            this.currentTmplContent = null;
+            this.tmplCount = 0;
             this.treeAdapter = treeAdapter;
-            items = new List<Element>();
         }
 
-        public void push(Element e)
+        public static bool isImpliedEndTagRequired(string tn)
         {
-            Extensions.push(items, e);
+            switch (tn.Length)
+            {
+                case 1:
+                    return tn == ɑ.P;
+
+                case 2:
+                    return tn == ɑ.RB || tn == ɑ.RP || tn == ɑ.RT || tn == ɑ.DD || tn == ɑ.DT || tn == ɑ.LI;
+
+                case 3:
+                    return tn == ɑ.RTC;
+
+                case 6:
+                    return tn == ɑ.OPTION;
+
+                case 8:
+                    return tn == ɑ.OPTGROUP || tn == ɑ.MENUITEM;
+            }
+
+            return false;
         }
 
-        public Element pop()
+        public static bool isScopingElement(string tn, string ns)
         {
-            return Extensions.pop<Element>(items);
+            switch (tn.Length)
+            {
+                case 2:
+                    if (tn == ɑ.TD || tn == ɑ.TH)
+                        return ns == NS.HTML;
+
+                    else if (tn == ɑ.MI || tn == ɑ.MO || tn == ɑ.MN || tn == ɑ.MS)
+                        return ns == NS.MATHML;
+
+                    break;
+
+                case 4:
+                    if (tn == ɑ.HTML)
+                        return ns == NS.HTML;
+
+                    else if (tn == ɑ.DESC)
+                        return ns == NS.SVG;
+
+                    break;
+
+                case 5:
+                    if (tn == ɑ.TABLE)
+                        return ns == NS.HTML;
+
+                    else if (tn == ɑ.MTEXT)
+                        return ns == NS.MATHML;
+
+                    else if (tn == ɑ.TITLE)
+                        return ns == NS.SVG;
+
+                    break;
+
+                case 6:
+                    return (tn == ɑ.APPLET || tn == ɑ.OBJECT) && ns == NS.HTML;
+
+                case 7:
+                    return (tn == ɑ.CAPTION || tn == ɑ.MARQUEE) && ns == NS.HTML;
+
+                case 8:
+                    return tn == ɑ.TEMPLATE && ns == NS.HTML;
+
+                case 13:
+                    return tn == ɑ.FOREIGN_OBJECT && ns == NS.SVG;
+
+                case 14:
+                    return tn == ɑ.ANNOTATION_XML && ns == NS.MATHML;
+            }
+
+            return false;
         }
 
-        internal void replace(Element element, Element newElement)
+
+
+        //Index of element
+        public int _indexOf(Element element)
         {
-            throw new NotImplementedException();
+            var idx = -1;
+
+            for (var i = this.stackTop; i >= 0; i--)
+            {
+                if (this.items[i] == element)
+                {
+                    idx = i;
+                    break;
+                }
+            }
+            return idx;
         }
 
-        internal void popUntilElementPopped(Element element)
+        //Update current element
+        public bool _isInTemplate()
         {
-            throw new NotImplementedException();
+            return this.currentTagName == ɑ.TEMPLATE && this.treeAdapter.getNamespaceURI(this.current) == NS.HTML;
         }
 
-        internal void generateImpliedEndTags()
+        public void _updateCurrentElement()
         {
-            throw new NotImplementedException();
+            this.current = this.items[this.stackTop];
+            this.currentTagName = this.current.IsTruthy() ? this.treeAdapter.getTagName(this.current) : null;
+
+            this.currentTmplContent = this._isInTemplate() ? this.treeAdapter.getTemplateContent(this.current) : null;
         }
 
-        internal void popUntilTableCellPopped()
+        //Mutations
+        public void push(Element element)
         {
-            throw new NotImplementedException();
+            this.items[++this.stackTop] = element;
+            this._updateCurrentElement();
+
+            if (this._isInTemplate())
+                this.tmplCount++;
+
         }
 
-        internal void generateImpliedEndTagsWithExclusion(string p)
+        public void pop()
         {
-            throw new NotImplementedException();
+            this.stackTop--;
+
+            if (this.tmplCount > 0 && this._isInTemplate())
+                this.tmplCount--;
+
+            this._updateCurrentElement();
         }
 
-        internal void popUntilTagNamePopped(string p)
+        public void replace(Element oldElement, Element newElement)
         {
-            throw new NotImplementedException();
+            var idx = this._indexOf(oldElement);
+
+            this.items[idx] = newElement;
+
+            if (idx == this.stackTop)
+                this._updateCurrentElement();
         }
 
-        internal Element getCommonAncestor(Element element)
+        public void insertAfter(Element referenceElement, Element newElement)
         {
-            throw new NotImplementedException();
+            var insertionIdx = this._indexOf(referenceElement) + 1;
+
+            this.items.splice(insertionIdx, 0, newElement);
+
+            if (insertionIdx == ++this.stackTop)
+                this._updateCurrentElement();
         }
 
-        internal void remove(Element element)
+        public void popUntilTagNamePopped(string tagName)
         {
-            throw new NotImplementedException();
+            while (this.stackTop > -1)
+            {
+                string tn = this.currentTagName;
+                string ns = this.treeAdapter.getNamespaceURI(this.current);
+
+                this.pop();
+
+                if (tn == tagName && ns == NS.HTML)
+                    break;
+            }
         }
 
-        internal void clearBackToTableRowContext()
+        public void popUntilElementPopped(Element element)
         {
-            throw new NotImplementedException();
+            while (this.stackTop > -1)
+            {
+                var poppedElement = this.current;
+
+                this.pop();
+
+                if (poppedElement == element)
+                    break;
+            }
         }
 
-        internal void clearBackToTableBodyContext()
+        public void popUntilNumberedHeaderPopped()
         {
-            throw new NotImplementedException();
+            while (this.stackTop > -1)
+            {
+                string tn = this.currentTagName,
+                    ns = this.treeAdapter.getNamespaceURI(this.current);
+
+                this.pop();
+
+                if (tn == ɑ.H1 || tn == ɑ.H2 || tn == ɑ.H3 || tn == ɑ.H4 || tn == ɑ.H5 || tn == ɑ.H6 && ns == NS.HTML)
+                    break;
+            }
         }
 
-        internal bool hasTableBodyContextInTableScope()
+        public void popUntilTableCellPopped()
         {
-            throw new NotImplementedException();
+            while (this.stackTop > -1)
+            {
+                string tn = this.currentTagName,
+                    ns = this.treeAdapter.getNamespaceURI(this.current);
+
+                this.pop();
+
+                if (tn == ɑ.TD || tn == ɑ.TH && ns == NS.HTML)
+                    break;
+            }
         }
 
-        internal bool hasInTableScope(string tn)
+        public void popAllUpToHtmlElement()
         {
-            throw new NotImplementedException();
+            //NOTE: here we assume that root <html> element is always first in the open element stack, so
+            //we perform this fast stack clean up.
+            this.stackTop = 0;
+            this._updateCurrentElement();
         }
 
-        internal bool hasInSelectScope(string sELECT)
+        public void clearBackToTableContext()
         {
-            throw new NotImplementedException();
+            while (this.currentTagName != ɑ.TABLE &&
+                   this.currentTagName != ɑ.TEMPLATE &&
+                   this.currentTagName != ɑ.HTML ||
+                   this.treeAdapter.getNamespaceURI(this.current) != NS.HTML)
+                this.pop();
         }
 
-        internal bool isRootHtmlElementCurrent()
+        public void clearBackToTableBodyContext()
         {
-            throw new NotImplementedException();
+            while (this.currentTagName != ɑ.TBODY &&
+                   this.currentTagName != ɑ.TFOOT &&
+                   this.currentTagName != ɑ.THEAD &&
+                   this.currentTagName != ɑ.TEMPLATE &&
+                   this.currentTagName != ɑ.HTML ||
+                   this.treeAdapter.getNamespaceURI(this.current) != NS.HTML)
+                this.pop();
         }
 
-        internal object tryPeekProperlyNestedBodyElement()
+        public void clearBackToTableRowContext()
         {
-            throw new NotImplementedException();
+            while (this.currentTagName != ɑ.TR &&
+                   this.currentTagName != ɑ.TEMPLATE &&
+                   this.currentTagName != ɑ.HTML ||
+                   this.treeAdapter.getNamespaceURI(this.current) != NS.HTML)
+                this.pop();
         }
 
-        internal void popAllUpToHtmlElement()
+        public void remove(Element element)
         {
-            throw new NotImplementedException();
+            for (var i = this.stackTop; i >= 0; i--)
+            {
+                if (this.items[i] == element)
+                {
+                    this.items.splice(i, 1);
+                    this.stackTop--;
+                    this._updateCurrentElement();
+                    break;
+                }
+            }
         }
 
-        internal bool hasInButtonScope(string p)
+        //Search
+        public Element tryPeekProperlyNestedBodyElement()
         {
-            throw new NotImplementedException();
+            //Properly nested <body> element (should be second element in stack).
+            var element = this.items[1];
+
+            return element.IsTruthy() && this.treeAdapter.getTagName(element) == ɑ.BODY ? element : null;
         }
 
-        internal bool hasInScope(string fORM)
+        public bool contains(Element element)
         {
-            throw new NotImplementedException();
+            return this._indexOf(element) > -1;
         }
 
-        internal bool hasNumberedHeaderInScope()
+        public Element getCommonAncestor(Element element)
         {
-            throw new NotImplementedException();
+            var elementIdx = this._indexOf(element);
+
+            return --elementIdx >= 0 ? this.items[elementIdx] : null;
         }
 
-        internal void popUntilNumberedHeaderPopped()
+        public bool isRootHtmlElementCurrent()
         {
-            throw new NotImplementedException();
+            return this.stackTop == 0 && this.currentTagName == ɑ.HTML;
         }
 
-        internal bool hasInListItemScope(string lI)
+        //Element in scope
+        public bool hasInScope(string tagName)
         {
-            throw new NotImplementedException();
+            for (var i = this.stackTop; i >= 0; i--)
+            {
+                string tn = this.treeAdapter.getTagName(this.items[i]);
+                string ns = this.treeAdapter.getNamespaceURI(this.items[i]);
+
+                if (tn == tagName && ns == NS.HTML)
+                    return true;
+
+                if (isScopingElement(tn, ns))
+                    return false;
+            }
+
+            return true;
         }
 
-        internal void clearBackToTableContext()
+        public bool hasNumberedHeaderInScope()
         {
-            throw new NotImplementedException();
+            for (var i = this.stackTop; i >= 0; i--)
+            {
+                string tn = this.treeAdapter.getTagName(this.items[i]);
+                string ns = this.treeAdapter.getNamespaceURI(this.items[i]);
+
+                if ((tn == ɑ.H1 || tn == ɑ.H2 || tn == ɑ.H3 || tn == ɑ.H4 || tn == ɑ.H5 || tn == ɑ.H6) && ns == NS.HTML)
+                    return true;
+
+                if (isScopingElement(tn, ns))
+                    return false;
+            }
+
+            return true;
         }
 
-        public bool contains(Element entryElement)
+        public bool hasInListItemScope(string tagName)
         {
-            throw new NotImplementedException();
+            for (var i = this.stackTop; i >= 0; i--)
+            {
+                string tn = this.treeAdapter.getTagName(this.items[i]);
+                string ns = this.treeAdapter.getNamespaceURI(this.items[i]);
+
+                if (tn == tagName && ns == NS.HTML)
+                    return true;
+
+                if ((tn == ɑ.UL || tn == ɑ.OL) && ns == NS.HTML || isScopingElement(tn, ns))
+                    return false;
+            }
+
+            return true;
         }
 
-        public void insertAfter(Element furthestBlock, Element newElement)
+        public bool hasInButtonScope(string tagName)
         {
-            throw new NotImplementedException();
+            for (var i = this.stackTop; i >= 0; i--)
+            {
+                string tn = this.treeAdapter.getTagName(this.items[i]);
+                string ns = this.treeAdapter.getNamespaceURI(this.items[i]);
+
+                if (tn == tagName && ns == NS.HTML)
+                    return true;
+
+                if (tn == ɑ.BUTTON && ns == NS.HTML || isScopingElement(tn, ns))
+                    return false;
+            }
+
+            return true;
         }
+
+        public bool hasInTableScope(string tagName)
+        {
+            for (var i = this.stackTop; i >= 0; i--)
+            {
+                string tn = this.treeAdapter.getTagName(this.items[i]);
+                string ns = this.treeAdapter.getNamespaceURI(this.items[i]);
+
+                if (ns != NS.HTML)
+                    continue;
+
+                if (tn == tagName)
+                    return true;
+
+                if (tn == ɑ.TABLE || tn == ɑ.TEMPLATE || tn == ɑ.HTML)
+                    return false;
+            }
+
+            return true;
+        }
+
+        public bool hasTableBodyContextInTableScope()
+        {
+            for (var i = this.stackTop; i >= 0; i--)
+            {
+                string tn = this.treeAdapter.getTagName(this.items[i]);
+                string ns = this.treeAdapter.getNamespaceURI(this.items[i]);
+
+                if (ns != NS.HTML)
+                    continue;
+
+                if (tn == ɑ.TBODY || tn == ɑ.THEAD || tn == ɑ.TFOOT)
+                    return true;
+
+                if (tn == ɑ.TABLE || tn == ɑ.HTML)
+                    return false;
+            }
+
+            return true;
+        }
+
+        public bool hasInSelectScope(string tagName)
+        {
+            for (var i = this.stackTop; i >= 0; i--)
+            {
+                string tn = this.treeAdapter.getTagName(this.items[i]);
+                string ns = this.treeAdapter.getNamespaceURI(this.items[i]);
+
+                if (ns != NS.HTML)
+                    continue;
+
+                if (tn == tagName)
+                    return true;
+
+                if (tn != ɑ.OPTION && tn != ɑ.OPTGROUP)
+                    return false;
+            }
+
+            return true;
+        }
+
+        //Implied end tags
+        public void generateImpliedEndTags()
+        {
+            while (isImpliedEndTagRequired(this.currentTagName))
+                this.pop();
+        }
+
+        public void generateImpliedEndTagsWithExclusion(string exclusionTagName)
+        {
+            while (isImpliedEndTagRequired(this.currentTagName) && this.currentTagName != exclusionTagName)
+                this.pop();
+        }
+
     }
 }
