@@ -108,17 +108,17 @@ namespace ParseFive.TreeAdapters
             throw new NotImplementedException();
         }
 
-        public List<Attr> getAttrList(Node element)
+        public List<Attr> getAttrList(Element element)
         {
             throw new NotImplementedException();
         }
 
-        public string getTagName(Node element)
+        public string getTagName(Element element)
         {
             throw new NotImplementedException();
         }
 
-        public string getNamespaceURI(Node element)
+        public string getNamespaceURI(Element element)
         {
             throw new NotImplementedException();
         }

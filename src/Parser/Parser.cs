@@ -91,7 +91,7 @@ namespace ParseFive.Parser
 
             this._bootstrap(documentMock, fragmentContext);
 
-            if (this.treeAdapter.getTagName(fragmentContext) == ɑ.TEMPLATE)
+            if (this.treeAdapter.getTagName((Element) fragmentContext) == ɑ.TEMPLATE)
                 this._pushTmplInsertionMode(IN_TEMPLATE_MODE);
 
             this._initTokenizerForFragmentParsing();
@@ -225,25 +225,25 @@ namespace ParseFive.Parser
 
         void _findFormInFragmentContext()
         {
-            var node = this.fragmentContext;
+            var node = (Element) this.fragmentContext;
 
             do
             {
                 if (this.treeAdapter.getTagName(node) == ɑ.FORM)
                 {
-                    this.formElement = (Element) node;
+                    this.formElement = node;
                     break;
                 }
 
-                node = this.treeAdapter.getParentNode(node);
+                node = (Element) this.treeAdapter.getParentNode(node);
             } while (node.IsTruthy()); //TODO
         }
 
         void _initTokenizerForFragmentParsing()
         {
-            if (this.treeAdapter.getNamespaceURI(this.fragmentContext) == NS.HTML)
+            if (this.treeAdapter.getNamespaceURI((Element) this.fragmentContext) == NS.HTML)
             {
-                var tn = this.treeAdapter.getTagName(this.fragmentContext);
+                var tn = this.treeAdapter.getTagName((Element) this.fragmentContext);
 
                 if (tn == ɑ.TITLE || tn == ɑ.TEXTAREA)
                     this.tokenizer.state = RCDATA;

@@ -7,7 +7,7 @@ namespace ParseFive.Parser
     {
         TreeAdapter treeAdapter;
         public Element currentTmplContent { get; }
-        public Node current { get; }
+        public Element current { get; }
         public List<Element> items;
         internal readonly string currentTagName;
         internal readonly int tmplCount;
@@ -16,7 +16,7 @@ namespace ParseFive.Parser
 
         public OpenElementStack(Node document, TreeAdapter treeAdapter)
         {
-            this.current = document;
+            this.current = (Element) document;
             this.treeAdapter = treeAdapter;
             items = new List<Element>();
         }

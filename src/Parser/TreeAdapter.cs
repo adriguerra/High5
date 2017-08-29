@@ -31,12 +31,12 @@ namespace ParseFive
         Element getFirstChild(Element node);
         Node getChildNodes(Node node);
         Node getParentNode(Node node);
-        List<Attr> getAttrList(Node element);
+        List<Attr> getAttrList(Element element);
 
         // Node data
 
-        string getTagName(Node element);
-        string getNamespaceURI(Node element);
+        string getTagName(Element element);
+        string getNamespaceURI(Element element);
         string getTextNodeContent(Node textNode);
         string getCommentNodeContent(Node commentNode);
         string getDocumentTypeNodeName(Node doctypeNode);
