@@ -7,7 +7,7 @@ namespace ParseFive.Parser
 {
     class OpenElementStack
     {
-        TreeAdapter treeAdapter;
+        readonly TreeAdapter treeAdapter;
         public Element currentTmplContent { get; set; }
         public Node current { get; set; }
         public List<Element> items;
