@@ -33,9 +33,6 @@ public class ElementEntry : IEntry
 
 public class Node
 {
-    internal string nodeName;
-    internal bool tagName;
-
     public Node ParentNode { get; internal set; }
     public List<Node> ChildNodes { get; } = new List<Node>();
 }
