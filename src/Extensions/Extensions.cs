@@ -75,6 +75,16 @@ namespace ParseFive.Extensions
             list.RemoveRange(index, count);
         }
 
+        public static void splice<T>(this List<T> list, int index, int count, T item1)
+        {
+            if (index != 0)
+            {
+                throw new NotImplementedException("Removal of elements not implemented");
+            }
+            else
+                list.Insert(index, item1);
+        }
+
         public static T shift<T> (this List<T> list)
         {
             if (list.Count == 0)
