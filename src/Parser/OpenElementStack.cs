@@ -14,9 +14,9 @@ namespace ParseFive.Parser
 
         public int stackTop => items.length;
 
-        public OpenElementStack(Node document, TreeAdapter treeAdapter)
+        public OpenElementStack(Element document, TreeAdapter treeAdapter)
         {
-            this.current = (Element) document;
+            this.current = document;
             this.treeAdapter = treeAdapter;
             items = new List<Element>();
         }
