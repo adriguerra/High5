@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using System.Collections.Generic;
 using System.Text;
 using Attrs = ParseFive.Extensions.List<Attr>;
@@ -12,12 +13,15 @@ using static ParseFive.Tokenizer.NamedEntityData;
 
 namespace ParseFive.Tokenizer
 {
+    using System.Linq;
+    using System.Reflection;
+
     [AttributeUsage(AttributeTargets.Method)]
     sealed class _Attribute : Attribute
     {
-        readonly string _name;
+        public string State { get; }
 
-        public _Attribute(string name) => _name = name;
+        public _Attribute(string state) => State = state;
     }
 
     public class Token
@@ -133,6 +137,17 @@ namespace ParseFive.Tokenizer
             this.currentAttr = null;
         }
 
+        Dictionary<string, Action<int>> _actionByState;
+
+        Action<int> this[string state] =>
+            (_actionByState ?? (_actionByState = ReflectStateMachine().ToDictionary(e => e.State, e => e.Action)))[state];
+
+        IEnumerable<(string State, Action<int> Action)> ReflectStateMachine() =>
+            from m in GetType().GetRuntimeMethods()
+            where m.IsPrivate && !m.IsStatic
+            select (State: m.GetCustomAttribute<_Attribute>()?.State.Trim(), Method: m) into e
+            where !string.IsNullOrEmpty(e.State)
+            select (e.State, (Action<int>) e.Method.CreateDelegate(typeof(Action<int>), this));
 
         //Tokenizer initial states for different modes
         public static class MODE
