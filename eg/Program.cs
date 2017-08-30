@@ -54,24 +54,23 @@ namespace Demo
                 switch (node)
                 {
                     case Document d:
-                    {
                         Print(output, level, "#document");
-                        foreach (var child in d.ChildNodes)
-                            Dump(child, output, level + 1);
                         break;
-                    }
                     case Element e:
-                    {
                         Print(output, level, "<", e.TagName, ">");
                         foreach (var a in e.Attributes)
                             Print(output, level + 1, a.name, "=", Jsonify(a.value));
-                        foreach (var child in e.ChildNodes)
-                            Dump(child, output, level + 1);
                         break;
-                    }
-                    case Text t: Print(output, level, Jsonify(t.Value)); break;
-                    case Comment c: Print(output, level, "#comment", Jsonify(c.Data)); break;
+                    case Text t:
+                        Print(output, level, Jsonify(t.Value));
+                        return;
+                    case Comment c:
+                        Print(output, level, "#comment", Jsonify(c.Data));
+                        return;
                 }
+
+                foreach (var child in node.ChildNodes)
+                    Dump(child, output, level + 1);
             }
         }
 
