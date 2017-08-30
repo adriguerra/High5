@@ -31,20 +31,22 @@ namespace Demo
 
             var parser = new Parser();
             var doc = parser.parse(html);
-            string indent = string.Empty;
+            char[] indent = {};
             Dump(doc, Console.Out);
             Console.WriteLine();
 
-            string Indented(int level, params string[] strings)
+            void Print(TextWriter output, int level, params string[] strings)
             {
-                if (level == 0)
-                    return string.Concat(strings);
-                var width = level * 2;
-                var indentation =
-                    indent.Length < width
-                    ? indent = "|" + new string(' ', width - 1)
-                    : indent.Substring(0, width);
-                return indentation + string.Concat(strings);
+                if (level > 0)
+                {
+                    var width = level * 2;
+                    if (indent.Length < width)
+                        indent = ("|" + new string(' ', width - 1)).ToCharArray();
+                    output.Write(indent, 0, width);
+                }
+                foreach (var s in strings)
+                    output.Write(s);
+                output.WriteLine();
             }
 
             void Dump(Node node, TextWriter output, int level = 0)
@@ -53,22 +55,22 @@ namespace Demo
                 {
                     case Document d:
                     {
-                        output.WriteLine(Indented(level, "#document"));
+                        Print(output, level, "#document");
                         foreach (var child in d.ChildNodes)
                             Dump(child, output, level + 1);
                         break;
                     }
                     case Element e:
                     {
-                        output.WriteLine(Indented(level, "<", e.TagName, ">"));
+                        Print(output, level, "<", e.TagName, ">");
                         foreach (var a in e.Attributes)
-                            output.WriteLine(Indented(level + 1, a.name, "=", Jsonify(a.value)));
+                            Print(output, level + 1, a.name, "=", Jsonify(a.value));
                         foreach (var child in e.ChildNodes)
                             Dump(child, output, level + 1);
                         break;
                     }
-                    case Text t: output.WriteLine(Indented(level, Jsonify(t.Value))); break;
-                    case Comment c: output.WriteLine(Indented(level, "#comment", Jsonify(c.Data))); break;
+                    case Text t: Print(output, level, Jsonify(t.Value)); break;
+                    case Comment c: Print(output, level, "#comment", Jsonify(c.Data)); break;
                 }
             }
         }
