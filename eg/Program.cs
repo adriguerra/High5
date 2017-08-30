@@ -54,9 +54,6 @@ namespace Demo
             {
                 switch (node)
                 {
-                    case Document d:
-                        Print(output, level, "#document");
-                        break;
                     case Element e:
                         Print(output, level, "<", e.TagName, ">");
                         foreach (var a in e.Attributes)
