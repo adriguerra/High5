@@ -10,7 +10,7 @@ namespace Demo
 
     static class Program
     {
-        static void Main(string[] args)
+        static void Wain(string[] args)
         {
             string html;
 
@@ -130,6 +130,20 @@ namespace Demo
 
             sb.Append('"');
             return sb;
+        }
+
+        static int Main(string[] args)
+        {
+            try
+            {
+                Wain(args);
+                return 0;
+            }
+            catch (Exception e)
+            {
+                Console.Error.WriteLine(e);
+                return 0xbad;
+            }
         }
     }
 }
