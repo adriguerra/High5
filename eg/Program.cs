@@ -19,7 +19,8 @@ namespace Demo
             {
                 html = Console.In.ReadToEnd();
             }
-            else if (Uri.TryCreate(source, UriKind.Absolute, out var url))
+            else if (Uri.TryCreate(source, UriKind.Absolute, out var url) &&
+                     url.Scheme != Uri.UriSchemeFile)
             {
                 using (var http = new HttpClient())
                     html = http.GetStringAsync(url).GetAwaiter().GetResult();
