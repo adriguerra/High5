@@ -12,6 +12,9 @@ namespace Demo
     {
         static void Wain(string[] args)
         {
+            Console.OutputEncoding = new UTF8Encoding(false);
+            Console.Error.WriteLine(Console.InputEncoding.ToString());
+            Console.Error.WriteLine(Console.OutputEncoding.ToString());
             string html;
 
             var source = args.FirstOrDefault() ?? "-";
@@ -54,13 +57,25 @@ namespace Demo
             {
                 switch (node)
                 {
+                    case DocumentType dt:
+                        Print(output, level,
+                            "<!DOCTYPE ",
+                            new StringBuilder()
+                                .Append(dt.Name)
+                                .Append(dt.PublicId != null || dt.SystemId != null ? " \"" + dt.PublicId + "\" \"" + dt.SystemId + "\"" : null)
+                                .ToString(),
+                            ">");
+                        break;
                     case Element e:
-                        Print(output, level, "<", e.TagName, ">");
+                        var ns = e.NamespaceUri == "http://www.w3.org/2000/svg" ? "svg "
+                               : e.NamespaceUri == "http://www.w3.org/1998/Math/MathML" ? "math "
+                               : null;
+                        Print(output, level, "<", ns, e.TagName, ">");
                         foreach (var a in e.Attributes)
                             Print(output, level + 1, a.name, "=", Jsonify(a.value));
                         break;
                     case Text t:
-                        Print(output, level, Jsonify(t.Value));
+                        Print(output, level, "\"" + t.Value + "\"");
                         return;
                     case Comment c:
                         Print(output, level, $"<!-- {c.Data} -->");
