@@ -97,7 +97,7 @@ namespace ParseFive.TreeAdapters
             var idx = parentNode.ChildNodes.IndexOf(referenceNode) - 1;
             var prevNode = 0 <= idx && idx < parentNode.ChildNodes.Count() ? parentNode.ChildNodes[idx] : null;
 
-            if (prevNode.IsTruthy() && prevNode.NodeName == "#text")
+            if (prevNode.IsTruthy() && isTextNode(prevNode))
                 ((Text)prevNode).Value += text;
             else
                 insertBefore(parentNode, createTextNode(text), referenceNode);
