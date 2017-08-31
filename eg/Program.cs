@@ -63,7 +63,7 @@ namespace Demo
                         Print(output, level, Jsonify(t.Value));
                         return;
                     case Comment c:
-                        Print(output, level, "#comment", Jsonify(c.Data));
+                        Print(output, level, $"<!-- {c.Data} -->");
                         return;
                 }
 
