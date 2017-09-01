@@ -277,7 +277,9 @@ namespace ParseFive.Tests
                                : null;
                         yield return Print(level, "<", ns, e.TagName, ">");
                         foreach (var a in e.Attributes)
-                            yield return Print(level + 1, a.name, "=", "\"" + a.value + "\"");
+                            yield return Print(level + 1,
+                                               !string.IsNullOrEmpty(a.prefix) ? a.prefix + " " : null,
+                                               a.name, "=", "\"", a.value, "\"");
                         break;
                     case Text t:
                         yield return Print(level, "\"" + t.Value + "\"");
