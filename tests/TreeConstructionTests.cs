@@ -13,10 +13,224 @@ namespace ParseFive.Tests
 
     public class TreeConstructionTests
     {
-        [Theory]
-        [MemberData(nameof(GetTestData))]
-        public void Dat(string   source,
-                        int      line,
+
+        [Theory, MemberData(nameof(GetTestData), "adoption01.dat")]
+        public void Adoption01(int line, string html, string documentFragment, string[] document) =>
+            Dat(line, html, documentFragment, document);
+
+        [Theory, MemberData(nameof(GetTestData), "adoption02.dat")]
+        public void Adoption02(int line, string html, string documentFragment, string[] document) =>
+            Dat(line, html, documentFragment, document);
+
+        [Theory, MemberData(nameof(GetTestData), "comments01.dat")]
+        public void Comments01(int line, string html, string documentFragment, string[] document) =>
+            Dat(line, html, documentFragment, document);
+
+        [Theory, MemberData(nameof(GetTestData), "doctype01.dat")]
+        public void Doctype01(int line, string html, string documentFragment, string[] document) =>
+            Dat(line, html, documentFragment, document);
+
+        [Theory, MemberData(nameof(GetTestData), "domjs-unsafe.dat")]
+        public void DomjsUnsafe(int line, string html, string documentFragment, string[] document) =>
+            Dat(line, html, documentFragment, document);
+
+        [Theory, MemberData(nameof(GetTestData), "entities01.dat")]
+        public void Entities01(int line, string html, string documentFragment, string[] document) =>
+            Dat(line, html, documentFragment, document);
+
+        [Theory, MemberData(nameof(GetTestData), "entities02.dat")]
+        public void Entities02(int line, string html, string documentFragment, string[] document) =>
+            Dat(line, html, documentFragment, document);
+
+        [Theory, MemberData(nameof(GetTestData), "foreign-fragment.dat")]
+        public void ForeignFragment(int line, string html, string documentFragment, string[] document) =>
+            Dat(line, html, documentFragment, document);
+
+        [Theory, MemberData(nameof(GetTestData), "html5test-com.dat")]
+        public void Html5TestCom(int line, string html, string documentFragment, string[] document) =>
+            Dat(line, html, documentFragment, document);
+
+        [Theory, MemberData(nameof(GetTestData), "inbody01.dat")]
+        public void Inbody01(int line, string html, string documentFragment, string[] document) =>
+            Dat(line, html, documentFragment, document);
+
+        [Theory, MemberData(nameof(GetTestData), "isindex.dat")]
+        public void Isindex(int line, string html, string documentFragment, string[] document) =>
+            Dat(line, html, documentFragment, document);
+
+        [Theory, MemberData(nameof(GetTestData), "main-element.dat")]
+        public void MainElement(int line, string html, string documentFragment, string[] document) =>
+            Dat(line, html, documentFragment, document);
+
+        [Theory, MemberData(nameof(GetTestData), "math.dat")]
+        public void Math(int line, string html, string documentFragment, string[] document) =>
+            Dat(line, html, documentFragment, document);
+
+        [Theory, MemberData(nameof(GetTestData), "menuitem-element.dat")]
+        public void MenuitemElement(int line, string html, string documentFragment, string[] document) =>
+            Dat(line, html, documentFragment, document);
+
+        [Theory, MemberData(nameof(GetTestData), "namespace-sensitivity.dat")]
+        public void NamespaceSensitivity(int line, string html, string documentFragment, string[] document) =>
+            Dat(line, html, documentFragment, document);
+
+        [Theory, MemberData(nameof(GetTestData), "noscript01.dat")]
+        public void Noscript01(int line, string html, string documentFragment, string[] document) =>
+            Dat(line, html, documentFragment, document);
+
+        [Theory, MemberData(nameof(GetTestData), "pending-spec-changes-plain-text-unsafe.dat")]
+        public void PendingSpecChangesPlainTextUnsafe(int line, string html, string documentFragment, string[] document) =>
+            Dat(line, html, documentFragment, document);
+
+        [Theory, MemberData(nameof(GetTestData), "pending-spec-changes.dat")]
+        public void PendingSpecChanges(int line, string html, string documentFragment, string[] document) =>
+            Dat(line, html, documentFragment, document);
+
+        [Theory, MemberData(nameof(GetTestData), "plain-text-unsafe.dat")]
+        public void PlainTextUnsafe(int line, string html, string documentFragment, string[] document) =>
+            Dat(line, html, documentFragment, document);
+
+        [Theory, MemberData(nameof(GetTestData), "ruby.dat")]
+        public void Ruby(int line, string html, string documentFragment, string[] document) =>
+            Dat(line, html, documentFragment, document);
+
+        [Theory, MemberData(nameof(GetTestData), "scriptdata01.dat")]
+        public void Scriptdata01(int line, string html, string documentFragment, string[] document) =>
+            Dat(line, html, documentFragment, document);
+
+        [Theory, MemberData(nameof(GetTestData), "tables01.dat")]
+        public void Tables01(int line, string html, string documentFragment, string[] document) =>
+            Dat(line, html, documentFragment, document);
+
+        [Theory, MemberData(nameof(GetTestData), "template.dat")]
+        public void Template(int line, string html, string documentFragment, string[] document) =>
+            Dat(line, html, documentFragment, document);
+
+        [Theory, MemberData(nameof(GetTestData), "tests1.dat")]
+        public void Tests1(int line, string html, string documentFragment, string[] document) =>
+            Dat(line, html, documentFragment, document);
+
+        [Theory, MemberData(nameof(GetTestData), "tests10.dat")]
+        public void Tests10(int line, string html, string documentFragment, string[] document) =>
+            Dat(line, html, documentFragment, document);
+
+        [Theory, MemberData(nameof(GetTestData), "tests11.dat")]
+        public void Tests11(int line, string html, string documentFragment, string[] document) =>
+            Dat(line, html, documentFragment, document);
+
+        [Theory, MemberData(nameof(GetTestData), "tests12.dat")]
+        public void Tests12(int line, string html, string documentFragment, string[] document) =>
+            Dat(line, html, documentFragment, document);
+
+        [Theory, MemberData(nameof(GetTestData), "tests14.dat")]
+        public void Tests14(int line, string html, string documentFragment, string[] document) =>
+            Dat(line, html, documentFragment, document);
+
+        [Theory, MemberData(nameof(GetTestData), "tests15.dat")]
+        public void Tests15(int line, string html, string documentFragment, string[] document) =>
+            Dat(line, html, documentFragment, document);
+
+        [Theory, MemberData(nameof(GetTestData), "tests16.dat")]
+        public void Tests16(int line, string html, string documentFragment, string[] document) =>
+            Dat(line, html, documentFragment, document);
+
+        [Theory, MemberData(nameof(GetTestData), "tests17.dat")]
+        public void Tests17(int line, string html, string documentFragment, string[] document) =>
+            Dat(line, html, documentFragment, document);
+
+        [Theory, MemberData(nameof(GetTestData), "tests18.dat")]
+        public void Tests18(int line, string html, string documentFragment, string[] document) =>
+            Dat(line, html, documentFragment, document);
+
+        [Theory, MemberData(nameof(GetTestData), "tests19.dat")]
+        public void Tests19(int line, string html, string documentFragment, string[] document) =>
+            Dat(line, html, documentFragment, document);
+
+        [Theory, MemberData(nameof(GetTestData), "tests2.dat")]
+        public void Tests2(int line, string html, string documentFragment, string[] document) =>
+            Dat(line, html, documentFragment, document);
+
+        [Theory, MemberData(nameof(GetTestData), "tests20.dat")]
+        public void Tests20(int line, string html, string documentFragment, string[] document) =>
+            Dat(line, html, documentFragment, document);
+
+        [Theory, MemberData(nameof(GetTestData), "tests21.dat")]
+        public void Tests21(int line, string html, string documentFragment, string[] document) =>
+            Dat(line, html, documentFragment, document);
+
+        [Theory, MemberData(nameof(GetTestData), "tests22.dat")]
+        public void Tests22(int line, string html, string documentFragment, string[] document) =>
+            Dat(line, html, documentFragment, document);
+
+        [Theory, MemberData(nameof(GetTestData), "tests23.dat")]
+        public void Tests23(int line, string html, string documentFragment, string[] document) =>
+            Dat(line, html, documentFragment, document);
+
+        [Theory, MemberData(nameof(GetTestData), "tests24.dat")]
+        public void Tests24(int line, string html, string documentFragment, string[] document) =>
+            Dat(line, html, documentFragment, document);
+
+        [Theory, MemberData(nameof(GetTestData), "tests25.dat")]
+        public void Tests25(int line, string html, string documentFragment, string[] document) =>
+            Dat(line, html, documentFragment, document);
+
+        [Theory, MemberData(nameof(GetTestData), "tests26.dat")]
+        public void Tests26(int line, string html, string documentFragment, string[] document) =>
+            Dat(line, html, documentFragment, document);
+
+        [Theory, MemberData(nameof(GetTestData), "tests3.dat")]
+        public void Tests3(int line, string html, string documentFragment, string[] document) =>
+            Dat(line, html, documentFragment, document);
+
+        [Theory, MemberData(nameof(GetTestData), "tests4.dat")]
+        public void Tests4(int line, string html, string documentFragment, string[] document) =>
+            Dat(line, html, documentFragment, document);
+
+        [Theory, MemberData(nameof(GetTestData), "tests5.dat")]
+        public void Tests5(int line, string html, string documentFragment, string[] document) =>
+            Dat(line, html, documentFragment, document);
+
+        [Theory, MemberData(nameof(GetTestData), "tests6.dat")]
+        public void Tests6(int line, string html, string documentFragment, string[] document) =>
+            Dat(line, html, documentFragment, document);
+
+        [Theory, MemberData(nameof(GetTestData), "tests7.dat")]
+        public void Tests7(int line, string html, string documentFragment, string[] document) =>
+            Dat(line, html, documentFragment, document);
+
+        [Theory, MemberData(nameof(GetTestData), "tests8.dat")]
+        public void Tests8(int line, string html, string documentFragment, string[] document) =>
+            Dat(line, html, documentFragment, document);
+
+        [Theory, MemberData(nameof(GetTestData), "tests9.dat")]
+        public void Tests9(int line, string html, string documentFragment, string[] document) =>
+            Dat(line, html, documentFragment, document);
+
+        [Theory, MemberData(nameof(GetTestData), "tests_innerHTML_1.dat")]
+        public void TestsInnerHtml1(int line, string html, string documentFragment, string[] document) =>
+            Dat(line, html, documentFragment, document);
+
+        [Theory, MemberData(nameof(GetTestData), "tricky01.dat")]
+        public void Tricky01(int line, string html, string documentFragment, string[] document) =>
+            Dat(line, html, documentFragment, document);
+
+        [Theory, MemberData(nameof(GetTestData), "webkit01.dat")]
+        public void Webkit01(int line, string html, string documentFragment, string[] document) =>
+            Dat(line, html, documentFragment, document);
+
+        [Theory, MemberData(nameof(GetTestData), "webkit02.dat")]
+        public void Webkit02(int line, string html, string documentFragment, string[] document) =>
+            Dat(line, html, documentFragment, document);
+
+        [Theory, MemberData(nameof(GetTestData), "gh40_form_in_template.dat")]
+        public void Gh40FormInTemplate(int line, string html, string documentFragment, string[] document) =>
+            Dat(line, html, documentFragment, document);
+
+        [Theory, MemberData(nameof(GetTestData), "document_write.dat")]
+        public void DocumentWrite(int line, string html, string documentFragment, string[] document) =>
+            Dat(line, html, documentFragment, document);
+
+        public void Dat(int      line,
                         string   html,
                         string   documentFragment,
                         string[] document)
@@ -82,7 +296,7 @@ namespace ParseFive.Tests
             }
         }
 
-        public static IEnumerable<object[]> GetTestData()
+        public static IEnumerable<object[]> GetTestData(string dat)
         {
             var assembly = MethodBase.GetCurrentMethod().DeclaringType.Assembly;
 
@@ -90,13 +304,13 @@ namespace ParseFive.Tests
                 from name in assembly.GetManifestResourceNames()
                 let tokens = name.Split('.').SkipWhile(e => e != "data").Skip(1).ToArray()
                 where tokens.Length > 1
-                    && tokens.First().StartsWith("tree_construction", StringComparison.OrdinalIgnoreCase)
+                   && tokens.First().StartsWith("tree_construction", StringComparison.OrdinalIgnoreCase)
+                   && name.EndsWith("." + dat, StringComparison.OrdinalIgnoreCase)
                 from test in
                     ParseTestData(
                         ReadTextResourceLines(name),
                         (line, data, isScriptOn, errors, documentFragment, document) => new object[]
                         {
-                            string.Join(".", tokens),
                             line, data, documentFragment, document.ToArray()
                         })
                 select test;
