@@ -326,7 +326,18 @@ namespace ParseFive.Tests
                         }
                         break;
                     case Text t:
-                        yield return Print(level, "\"" + t.Value + "\"");
+                        var lines = t.Value.Split('\n');
+                        if (lines.Length == 1)
+                        {
+                            yield return Print(level, "\"", t.Value, "\"");
+                        }
+                        else
+                        {
+                            for (var i = 0; i < lines.Length; i++)
+                                yield return i == 0 ? Print(level, "\"", lines[i])
+                                           : i < lines.Length - 1 ? lines[i]
+                                           : lines[i] + "\"";
+                        }
                         break;
                     case Comment c:
                         yield return Print(level, $"<!-- {c.Data} -->");
