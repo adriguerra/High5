@@ -75,7 +75,7 @@ namespace ParseFive.Tests
         public void NamespaceSensitivity(int line, string html, string documentFragment, string[] document) =>
             Dat(line, html, documentFragment, document);
 
-        [Theory, MemberData(nameof(GetTestData), "noscript01.dat")]
+        [Theory(Skip = "Skip tests with the scripting disabled since we always act as the interactive user agent."), MemberData(nameof(GetTestData), "noscript01.dat")]
         public void Noscript01(int line, string html, string documentFragment, string[] document) =>
             Dat(line, html, documentFragment, document);
 
@@ -366,11 +366,18 @@ namespace ParseFive.Tests
                 from test in
                     ParseTestData(
                         ReadTextResourceLines(name),
-                        (line, data, isScriptOn, errors, documentFragment, document) => new object[]
+                        (line, data, isScriptOff, errors, documentFragment, document) => new
                         {
-                            line, data, documentFragment, document.ToArray()
+                            IsScriptOff = isScriptOff,
+                            Args = new object[]
+                            {
+                                line, data, documentFragment, document.ToArray()
+                            },
                         })
-                select test;
+                // NOTE! Skip tests with the scripting disabled
+                // since we always act as the interactive user agent.
+                where !test.IsScriptOff
+                select test.Args;
 
             IEnumerable<string> ReadTextResourceLines(string rn)
             {
@@ -389,7 +396,7 @@ namespace ParseFive.Tests
                 IEnumerable<string> lines,
                 Func<int                , // Line,
                      string             , // Data,
-                     bool               , // IsScriptOn,
+                     bool               , // IsScriptOff,
                      IEnumerable<string>, // Errors,
                      string             , // DocumentFragment,
                      IEnumerable<string>, // Document>
@@ -407,7 +414,7 @@ namespace ParseFive.Tests
             IEnumerable<string> errors = null;
             string documentFragment = null;
             IEnumerable<string> document = null;
-            var isScriptOn = false;
+            var isScriptOff = false;
 
             string ReadLine(IEnumerator<(int, string Line)> e) =>
                 e.MoveNext() ? e.Current.Line : throw new FormatException();
@@ -441,15 +448,15 @@ namespace ParseFive.Tests
                         {
                             case "#data":
                                 if (data != null)
-                                    yield return resultSelector(start, data, isScriptOn, errors, documentFragment, document);
+                                    yield return resultSelector(start, data, isScriptOff, errors, documentFragment, document);
                                 start = lnr;
                                 data = string.Join("\n", ReadLines(e, ref lnr, ref line));
                                 continue;
                             case "#errors": errors = ReadLines(e, ref lnr, ref line); continue;
                             case "#document-fragment": documentFragment = ReadLine(e); break;
                             case "#document": document = ReadLines(e, ref lnr, ref line); continue;
-                            case "#script-on": isScriptOn = true; break;
-                            case "#script-off": isScriptOn = false; break;
+                            case "#script-on": isScriptOff = false; break;
+                            case "#script-off": isScriptOff = true; break;
                             default: throw new FormatException($"Error parsing line #{lnr}: {line}");
                         }
 
@@ -463,7 +470,7 @@ namespace ParseFive.Tests
             }
 
             if (data != null)
-                yield return resultSelector(start, data, isScriptOn, errors, documentFragment, document);
+                yield return resultSelector(start, data, isScriptOff, errors, documentFragment, document);
         }
     }
 }
