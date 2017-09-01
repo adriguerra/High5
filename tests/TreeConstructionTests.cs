@@ -276,10 +276,19 @@ namespace ParseFive.Tests
                                : e.NamespaceUri == "http://www.w3.org/1998/Math/MathML" ? "math "
                                : null;
                         yield return Print(level, "<", ns, e.TagName, ">");
-                        foreach (var a in e.Attributes)
-                            yield return Print(level + 1,
-                                               !string.IsNullOrEmpty(a.prefix) ? a.prefix + " " : null,
-                                               a.name, "=", "\"", a.value, "\"");
+                        foreach (var a in from a in e.Attributes
+                                          let prefix = !string.IsNullOrEmpty(a.prefix) ? a.prefix + " " : null
+                                          select new
+                                          {
+                                              name = prefix + a.name,
+                                              a.value
+                                          }
+                                          into a
+                                          orderby a.name
+                                          select a)
+                        {
+                            yield return Print(level + 1, a.name, "=", "\"", a.value, "\"");
+                        }
                         break;
                     case Text t:
                         yield return Print(level, "\"" + t.Value + "\"");
