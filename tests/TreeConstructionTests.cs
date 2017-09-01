@@ -289,6 +289,16 @@ namespace ParseFive.Tests
                         {
                             yield return Print(level + 1, a.name, "=", "\"", a.value, "\"");
                         }
+                        if (e is TemplateElement te)
+                        {
+                            yield return Print(level + 1, "content");
+                            foreach (var dump in from child in te.content.ChildNodes
+                                                 from dump in Dump(child, level + 2)
+                                                 select dump)
+                            {
+                                yield return dump;
+                            }
+                        }
                         break;
                     case Text t:
                         yield return Print(level, "\"" + t.Value + "\"");
