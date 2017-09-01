@@ -226,7 +226,7 @@ namespace ParseFive.Tests
         public void Gh40FormInTemplate(int line, string html, string documentFragment, string[] document) =>
             Dat(line, html, documentFragment, document);
 
-        [Theory, MemberData(nameof(GetTestData), "document_write.dat")]
+        [Theory(Skip = "Scripting not available"), MemberData(nameof(GetTestData), "document_write.dat")]
         public void DocumentWrite(int line, string html, string documentFragment, string[] document) =>
             Dat(line, html, documentFragment, document);
 
