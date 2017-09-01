@@ -18,8 +18,6 @@ namespace ParseFive.Tests
         public void Dat(string              source,
                         int                 line,
                         string              html,
-                        bool                isScriptOn,
-                        IEnumerable<string> errors,
                         string              documentFragment,
                         IEnumerable<string> document)
         {
@@ -99,7 +97,7 @@ namespace ParseFive.Tests
                         (line, data, isScriptOn, errors, documentFragment, document) => new object[]
                         {
                             string.Join(".", tokens),
-                            line, data, isScriptOn, errors.ToArray(), documentFragment, document.ToArray()
+                            line, data, documentFragment, document.ToArray()
                         })
                 select test;
 
