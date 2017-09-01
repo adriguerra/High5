@@ -10,6 +10,7 @@ namespace ParseFive.Tests
     using System.Text;
     using MoreLinq;
     using Parser;
+    using TreeAdapters;
 
     public class TreeConstructionTests
     {
@@ -235,8 +236,32 @@ namespace ParseFive.Tests
                         string   documentFragment,
                         string[] document)
         {
+            const string nsSvg = "http://www.w3.org/2000/svg";
+            const string nsMath = "http://www.w3.org/1998/Math/MathML";
+            const string nsHtml = "http://www.w3.org/1999/xhtml";
+
+            var parse = new Func<Parser, string, Node>((p, s) => p.parse(s));
+
+            if (documentFragment != null)
+            {
+                var tokens = documentFragment.Split(' ');
+                var (ns, tagName) =
+                    tokens.Length > 1
+                    ? (tokens[0], tokens[1])
+                    : (null, documentFragment);
+
+                var context =
+                    DefaultTreeAdapter.Instance.createElement(
+                        tagName, ns == "svg" ? nsSvg
+                               : ns == "math" ? nsMath
+                               : nsHtml,
+                        new Extensions.List<Attr>());
+
+                parse = (p, s) => p.parseFragment(s, context);
+            }
+
             var parser = new Parser();
-            var doc = parser.parse(html);
+            var doc = parse(parser, html);
             char[] indent = {};
             var actuals = Dump(doc);
             foreach (var t in document.ZipLongest(actuals, (exp, act) => new { Expected = exp, Actual = act }))
@@ -272,8 +297,8 @@ namespace ParseFive.Tests
                             ">");
                         break;
                     case Element e:
-                        var ns = e.NamespaceUri == "http://www.w3.org/2000/svg" ? "svg "
-                               : e.NamespaceUri == "http://www.w3.org/1998/Math/MathML" ? "math "
+                        var ns = e.NamespaceUri == nsSvg ? "svg "
+                               : e.NamespaceUri == nsMath ? "math "
                                : null;
                         yield return Print(level, "<", ns, e.TagName, ">");
                         foreach (var a in from a in e.Attributes
