@@ -15,11 +15,11 @@ namespace ParseFive.Tests
     {
         [Theory]
         [MemberData(nameof(GetTestData))]
-        public void Dat(string              source,
-                        int                 line,
-                        string              html,
-                        string              documentFragment,
-                        IEnumerable<string> document)
+        public void Dat(string   source,
+                        int      line,
+                        string   html,
+                        string   documentFragment,
+                        string[] document)
         {
             var parser = new Parser();
             var doc = parser.parse(html);
